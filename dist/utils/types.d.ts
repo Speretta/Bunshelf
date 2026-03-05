@@ -7,6 +7,7 @@ export interface DocConfig {
     theme?: {
         default: string;
     };
+    logo?: string;
 }
 export interface SidebarConfig {
     [locale: string]: SidebarItem[];

@@ -4,6 +4,7 @@ export declare function renderNavbar(options: {
     title: string;
     homeUrl: string;
     i18n: TranslationStrings;
+    logo?: string;
 }): string;
 export declare function renderNavbarWithThemes(options: {
     title: string;
@@ -11,5 +12,6 @@ export declare function renderNavbarWithThemes(options: {
     themes: Theme[];
     currentTheme?: string;
     i18n: TranslationStrings;
+    logo?: string;
 }): string;
 //# sourceMappingURL=navbar.d.ts.map

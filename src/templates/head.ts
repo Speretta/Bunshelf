@@ -1,11 +1,14 @@
 import { CDN } from "../core/constants/cdn.js";
 
+const DEFAULT_LOGO = "/assets/images/logo.webp";
+
 export function renderHead(options: {
   title: string;
   siteTitle: string;
   description: string;
+  logo?: string;
 }): string {
-  const { title, siteTitle, description } = options;
+  const { title, siteTitle, description, logo = DEFAULT_LOGO } = options;
 
   return `
 <head>
@@ -14,7 +17,7 @@ export function renderHead(options: {
   <meta name="description" content="${description}">
   <meta name="color-scheme" content="light dark">
   <title>${title} | ${siteTitle}</title>
-  <link rel="icon" type="image/webp" href="/assets/images/logo.webp">
+  <link rel="icon" type="image/webp" href="${logo}">
   <link rel="stylesheet" href="/assets/css/base.css">
   <link rel="stylesheet" href="/assets/css/themes.css">
   <link rel="stylesheet" href="/assets/css/layout.css">

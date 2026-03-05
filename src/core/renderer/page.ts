@@ -60,9 +60,9 @@ export function renderPage(options: PageRenderOptions): string {
 
   return `<!DOCTYPE html>
 <html lang="${locale}">
-${renderHead({ title, siteTitle: config.title, description })}
+${renderHead({ title, siteTitle: config.title, description, logo: config.logo })}
 <body>
-  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n })}
+  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo })}
 
   <div class="layout">
     ${renderSidebarPanel({ localeLinks, sidebarHtml })}

@@ -17,9 +17,9 @@ export function renderPage(options) {
     const next = nextPage ?? (currentIndex < flatPages.length - 1 ? (flatPages[currentIndex + 1] ?? null) : null);
     return `<!DOCTYPE html>
 <html lang="${locale}">
-${renderHead({ title, siteTitle: config.title, description })}
+${renderHead({ title, siteTitle: config.title, description, logo: config.logo })}
 <body>
-  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n })}
+  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo })}
 
   <div class="layout">
     ${renderSidebarPanel({ localeLinks, sidebarHtml })}

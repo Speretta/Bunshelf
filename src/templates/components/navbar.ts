@@ -4,18 +4,21 @@ import type { TranslationStrings } from "../../i18n/index.js";
 import { getSearchTranslations, getThemeTranslations } from "../../i18n/accessors.js";
 import { renderThemeOptions } from "./theme-toggle.js";
 
+const DEFAULT_LOGO = "/assets/images/logo.webp";
+
 export function renderNavbar(options: {
   title: string;
   homeUrl: string;
   i18n: TranslationStrings;
+  logo?: string;
 }): string {
-  const { title, homeUrl, i18n } = options;
+  const { title, homeUrl, i18n, logo = DEFAULT_LOGO } = options;
   const { placeholder: searchPlaceholder } = getSearchTranslations(i18n);
   
   return `
   <nav class="navbar">
     <a href="${homeUrl}" class="navbar-brand">
-      <img src="/assets/images/logo.webp" alt="${title}" class="navbar-logo">
+      <img src="${logo}" alt="${title}" class="navbar-logo">
       <span class="navbar-brand-text">${title}</span>
     </a>
     <div class="navbar-actions">
@@ -38,8 +41,9 @@ export function renderNavbarWithThemes(options: {
   themes: Theme[];
   currentTheme?: string;
   i18n: TranslationStrings;
+  logo?: string;
 }): string {
-  const { title, homeUrl, themes, currentTheme = "light", i18n } = options;
+  const { title, homeUrl, themes, currentTheme = "light", i18n, logo = DEFAULT_LOGO } = options;
   
   const currentIcon = themeIcons[currentTheme] || icons.sun;
   const themeLabels = getThemeTranslations(i18n);
@@ -61,6 +65,6 @@ export function renderNavbarWithThemes(options: {
       </div>
     </div>`;
 
-  const navbar = renderNavbar({ title, homeUrl, i18n });
+  const navbar = renderNavbar({ title, homeUrl, i18n, logo });
   return navbar.replace("{{THEME_TOGGLE}}", themeToggle);
 }
