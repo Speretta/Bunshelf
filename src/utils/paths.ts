@@ -20,5 +20,5 @@ export function getPublicDir(): string {
 }
 
 export function getI18nDir(): string {
-  return join(getProjectRoot(), "src/i18n/translations");
+  return join(__dirname, "../i18n/translations");
 }

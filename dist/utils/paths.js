@@ -14,6 +14,6 @@ export function getPublicDir() {
     return join(getProjectRoot(), "public");
 }
 export function getI18nDir() {
-    return join(getProjectRoot(), "src/i18n/translations");
+    return join(__dirname, "../i18n/translations");
 }
 //# sourceMappingURL=paths.js.map
