@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "docs": "Dokümanlar",
+    "search": "Ara"
+  },
+  "search": {
+    "placeholder": "Ara...",
+    "noResults": "Sonuç bulunamadı:",
+    "results": "Sonuçlar"
+  },
+  "theme": {
+    "light": "Açık",
+    "dark": "Koyu",
+    "hacker": "Hacker"
+  },
+  "footer": {
+    "poweredBy": "Powered by"
+  },
+  "pageNav": {
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "redirect": {
+    "redirecting": "Yönlendiriliyor..."
+  },
+  "404": {
+    "title": "Sayfa Bulunamadı",
+    "message": "Aradığınız sayfa bulunamadı.",
+    "home": "Ana Sayfaya Dön"
+  }
+}

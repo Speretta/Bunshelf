@@ -1,0 +1,55 @@
+export interface DocConfig {
+  title: string;
+  description: string;
+  defaultLocale: string;
+  locales: string[];
+  sidebar?: SidebarConfig;
+  theme?: {
+    default: string;
+  };
+}
+
+export interface SidebarConfig {
+  [locale: string]: SidebarItem[];
+}
+
+export interface SidebarItem {
+  label: string;
+  href?: string;
+  items?: SidebarItem[];
+  collapsed?: boolean;
+}
+
+export interface PageMeta {
+  title: string;
+  description?: string;
+  order?: number;
+  sidebar_label?: string;
+  hide?: boolean;
+}
+
+export interface ParsedDocument {
+  meta: PageMeta;
+  content: string;
+  html: string;
+}
+
+export interface RouteParams {
+  locale: string;
+  path: string[];
+  slug: string;
+}
+
+export interface SearchResult {
+  title: string;
+  href: string;
+  excerpt: string;
+  content: string;
+  locale: string;
+}
+
+export interface Theme {
+  name: string;
+  label: string;
+  vars: Record<string, string>;
+}

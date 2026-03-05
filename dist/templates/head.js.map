@@ -1,0 +1,1 @@
+{"version":3,"file":"head.js","sourceRoot":"","sources":["../../src/templates/head.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,GAAG,EAAE,MAAM,0BAA0B,CAAC;AAE/C,MAAM,UAAU,UAAU,CAAC,OAI1B;IACC,MAAM,EAAE,KAAK,EAAE,SAAS,EAAE,WAAW,EAAE,GAAG,OAAO,CAAC;IAElD,OAAO;;;;sCAI6B,WAAW;;WAEtC,KAAK,MAAM,SAAS;;;;;;;;;;;iBAWd,GAAG,CAAC,MAAM;iBACV,GAAG,CAAC,WAAW;;;;;;;;;;;;;;QAcxB,CAAC;AACT,CAAC"}

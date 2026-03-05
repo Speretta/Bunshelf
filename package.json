@@ -1,0 +1,78 @@
+{
+  "name": "bunshelf",
+  "version": "1.0.0",
+  "description": "A modern, fast, and beautiful documentation generator with built-in themes, search, and i18n support",
+  "author": "speretta <speretta@bunshelf>",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "bunshelf": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./cli": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "public"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "documentation",
+    "docs",
+    "static-site-generator",
+    "markdown",
+    "i18n",
+    "search",
+    "themes",
+    "bun",
+    "bunshelf"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/speretta/bunshelf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/speretta/bunshelf/issues"
+  },
+  "homepage": "https://github.com/speretta/bunshelf#readme",
+  "scripts": {
+    "dev": "bun run --hot src/server.ts",
+    "build": "bun run src/ssg/builder.ts",
+    "preview": "bun run src/ssg/preview.ts",
+    "prepublishOnly": "bun run build:ts",
+    "build:ts": "tsc --project tsconfig.build.json",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.10",
+    "@types/highlight.js": "^10.1.0",
+    "@types/markdown-it": "^14.1.2"
+  },
+  "peerDependencies": {
+    "bun": ">=1.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "bun": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "front-matter": "^4.0.2",
+    "fuse.js": "^7.1.0",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.1",
+    "yaml": "^2.8.2"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
