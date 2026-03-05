@@ -38,7 +38,43 @@ sidebar:
 | `description` | string | - | Meta description for SEO |
 | `defaultLocale` | string | "en" | Default language code |
 | `locales` | string[] | ["en"] | List of available locales |
+| `base` | string | "" | Base URL path for subdirectory deployment |
 | `logo` | string | - | Path to logo image |
+
+### Base URL Configuration
+
+The `base` option is essential when deploying to a subdirectory (e.g., GitHub Pages, GitLab Pages):
+
+```yaml
+# For GitHub Pages: https://username.github.io/repo-name/
+base: /repo-name
+
+# For GitLab Pages: https://username.gitlab.io/project/
+base: /project
+
+# For custom domain or root deployment
+base: ""
+```
+
+::: note Important
+The `base` option automatically prefixes all internal links, assets, and navigation URLs. This ensures your documentation works correctly when hosted in a subdirectory.
+:::
+
+#### GitHub Pages Example
+
+For GitHub Pages deployment:
+
+1. Add `base` to your `config.yaml`:
+   ```yaml
+   base: /YourRepoName
+   ```
+
+2. The repository name should match your `base` value (case-sensitive)
+
+3. All URLs will be prefixed automatically:
+   - Assets: `/YourRepoName/assets/css/style.css`
+   - Pages: `/YourRepoName/intro`
+   - Navigation: `/YourRepoName/getting-started/installation`
 
 ### Theme Configuration
 

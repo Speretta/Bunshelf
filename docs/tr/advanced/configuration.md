@@ -38,7 +38,43 @@ sidebar:
 | `description` | string | - | SEO için meta açıklama |
 | `defaultLocale` | string | "en" | Varsayılan dil kodu |
 | `locales` | string[] | ["en"] | Mevcut dillerin listesi |
+| `base` | string | "" | Alt dizin dağıtımı için temel URL yolu |
 | `logo` | string | - | Logo resmi yolu |
+
+### Temel URL Yapılandırması
+
+`base` seçeneği, bir alt dizine dağıtım yaparken (ör. GitHub Pages, GitLab Pages) gereklidir:
+
+```yaml
+# GitHub Pages için: https://kullanici.github.io/repo-adi/
+base: /repo-adi
+
+# GitLab Pages için: https://kullanici.gitlab.io/proje/
+base: /proje
+
+# Özel alan adı veya kök dağıtım için
+base: ""
+```
+
+::: note Önemli
+`base` seçeneği, tüm dahili bağlantıları, varlıkları ve gezinme URL'lerini otomatik olarak önekler. Bu, dokümantasyonunuzun bir alt dizinde barındırıldığında doğru çalışmasını sağlar.
+:::
+
+#### GitHub Pages Örneği
+
+GitHub Pages dağıtımı için:
+
+1. `config.yaml` dosyanıza `base` ekleyin:
+   ```yaml
+   base: /RepoAdiniz
+   ```
+
+2. Depo adı, `base` değeriyle eşleşmelidir (büyük/küçük harf duyarlı)
+
+3. Tüm URL'ler otomatik olarak öneklenecektir:
+   - Varlıklar: `/RepoAdiniz/assets/css/style.css`
+   - Sayfalar: `/RepoAdiniz/intro`
+   - Gezinme: `/RepoAdiniz/getting-started/installation`
 
 ### Tema Yapılandırması
 

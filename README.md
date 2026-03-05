@@ -101,6 +101,7 @@ Create a `config.yaml` in your `docs/` folder:
 title: My Documentation
 description: A comprehensive guide
 defaultLocale: en
+base: /repo-name  # Required for GitHub Pages subdirectory deployment
 locales:
   - en
   - tr
@@ -252,7 +253,18 @@ netlify deploy --prod --dir=dist
 
 ### GitHub Pages
 
-Push the `dist/` folder to your `gh-pages` branch.
+1. Add `base` to your `docs/config.yaml`:
+   ```yaml
+   base: /YourRepoName
+   ```
+
+2. The repository uses GitHub Actions for automatic deployment (see `.github/workflows/deploy.yml`)
+
+3. Enable GitHub Pages in repository **Settings** → **Pages** → **Source**: GitHub Actions
+
+4. Your site will be available at: `https://username.github.io/YourRepoName/`
+
+> **Note:** The `base` configuration ensures all assets, links, and navigation work correctly when deployed to a subdirectory.
 
 ## Mobile Responsive
 
