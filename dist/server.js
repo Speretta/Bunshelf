@@ -47,13 +47,38 @@ async function handleRequest(request) {
     }
     return handlePage(url);
 }
+const MIME_TYPES = {
+    ".css": "text/css",
+    ".js": "application/javascript",
+    ".json": "application/json",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".svg": "image/svg+xml",
+    ".webp": "image/webp",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
+    ".eot": "application/vnd.ms-fontobject",
+    ".ico": "image/x-icon",
+    ".html": "text/html",
+    ".xml": "application/xml",
+};
+function getMimeType(path) {
+    const ext = path.substring(path.lastIndexOf(".")).toLowerCase();
+    return MIME_TYPES[ext] || "application/octet-stream";
+}
 async function handleAsset(url) {
     const path = new URL(url).pathname;
     const filePath = join(PUBLIC_DIR, path);
     if (await exists(filePath)) {
         const fileContent = runtimeFile(filePath);
         const buffer = await fileContent.arrayBuffer();
-        return new Response(buffer);
+        const contentType = getMimeType(filePath);
+        return new Response(buffer, {
+            headers: { "Content-Type": contentType },
+        });
     }
     return new Response("Not Found", { status: 404 });
 }

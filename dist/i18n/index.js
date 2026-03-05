@@ -1,11 +1,13 @@
 import { glob, file as runtimeFile } from "../utils/runtime.js";
+import { join } from "node:path";
 const translations = {};
 export async function loadTranslations(i18nDir) {
     const scanner = glob("*.json");
     for await (const file of scanner.scan({ cwd: i18nDir })) {
         const fileName = file.split("/").pop() || file;
         const locale = fileName.replace(".json", "");
-        const content = await runtimeFile(file).json();
+        const fullPath = join(i18nDir, file);
+        const content = await runtimeFile(fullPath).json();
         translations[locale] = content;
     }
 }
