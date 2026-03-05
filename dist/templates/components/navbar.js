@@ -1,7 +1,9 @@
 import { icons, themeIcons } from "./icons.js";
+import { getSearchTranslations, getThemeTranslations } from "../../i18n/accessors.js";
+import { renderThemeOptions } from "./theme-toggle.js";
 export function renderNavbar(options) {
     const { title, homeUrl, i18n } = options;
-    const searchPlaceholder = i18n.search?.placeholder || "Search...";
+    const { placeholder: searchPlaceholder } = getSearchTranslations(i18n);
     return `
   <nav class="navbar">
     <a href="${homeUrl}" class="navbar-brand">
@@ -24,18 +26,12 @@ export function renderNavbar(options) {
 export function renderNavbarWithThemes(options) {
     const { title, homeUrl, themes, currentTheme = "light", i18n } = options;
     const currentIcon = themeIcons[currentTheme] || icons.sun;
-    const themeLabels = i18n.theme || {};
-    const themeOptions = themes
-        .map((t) => {
-        const icon = themeIcons[t.name] || icons.sun;
-        const label = themeLabels[t.name] || t.label;
-        return `
-        <button class="theme-option${t.name === currentTheme ? " active" : ""}" data-theme="${t.name}">
-          <span class="theme-option-icon">${icon}</span>
-          <span class="theme-option-label">${label}</span>
-        </button>`;
-    })
-        .join("");
+    const themeLabels = getThemeTranslations(i18n);
+    const themedLabels = themes.map(t => ({
+        ...t,
+        label: themeLabels[t.name] || t.label,
+    }));
+    const themeOptions = renderThemeOptions(themedLabels, currentTheme);
     const themeToggle = `
     <div class="theme-toggle">
       <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle theme" data-theme="${currentTheme}">

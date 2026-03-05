@@ -1,15 +1,9 @@
-export declare const DEFAULTS: {
-    title: string;
-    description: string;
-    untitled: string;
-    searchPlaceholder: string;
-    docsLabel: string;
-    poweredBy: string;
-};
+export declare const UNTITLED = "Untitled";
 export declare const DEFAULT_CONFIG: {
-    readonly title: string;
-    readonly description: string;
+    readonly title: "Bunshelf";
+    readonly description: "A fast documentation website generator";
     readonly defaultLocale: "en";
     readonly locales: readonly ["en"];
 };
+export declare const DEFAULT_ORDER = 999;
 //# sourceMappingURL=defaults.d.ts.map

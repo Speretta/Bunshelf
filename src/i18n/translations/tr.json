@@ -27,5 +27,18 @@
     "title": "Sayfa Bulunamadı",
     "message": "Aradığınız sayfa bulunamadı.",
     "home": "Ana Sayfaya Dön"
+  },
+  "menu": "Menü",
+  "callouts": {
+    "note": "Not",
+    "tip": "İpucu",
+    "info": "Bilgi",
+    "warning": "Uyarı",
+    "error": "Hata",
+    "danger": "Tehlike"
+  },
+  "code": {
+    "copy": "Kodu kopyala",
+    "copied": "Kopyalandı!"
   }
 }

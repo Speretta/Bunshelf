@@ -1,5 +1,5 @@
 import { parseMarkdown } from "../../markdown/parser.js";
-import { DEFAULTS } from "../constants/defaults.js";
+import { UNTITLED } from "../constants/defaults.js";
 import { parseFrontmatter } from "../../utils/frontmatter.js";
 
 export interface ParsedDocument {
@@ -17,7 +17,7 @@ export function parseDocument(content: string): ParsedDocument {
 
   return { 
     meta: {
-      title: meta.title || DEFAULTS.untitled,
+      title: meta.title || UNTITLED,
       description: meta.description,
     }, 
     html 

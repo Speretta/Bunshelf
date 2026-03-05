@@ -1,14 +1,28 @@
 import { glob, file as runtimeFile } from "../utils/runtime.js";
 import { join } from "node:path";
+import { logger } from "../utils/logger.js";
 const translations = {};
+function isTranslationStrings(value) {
+    return typeof value === "object" && value !== null;
+}
 export async function loadTranslations(i18nDir) {
     const scanner = glob("*.json");
     for await (const file of scanner.scan({ cwd: i18nDir })) {
         const fileName = file.split("/").pop() || file;
         const locale = fileName.replace(".json", "");
         const fullPath = join(i18nDir, file);
-        const content = await runtimeFile(fullPath).json();
-        translations[locale] = content;
+        try {
+            const content = await runtimeFile(fullPath).json();
+            if (isTranslationStrings(content)) {
+                translations[locale] = content;
+            }
+            else {
+                logger.warn("Invalid translation file structure", { file: fileName });
+            }
+        }
+        catch (error) {
+            logger.error("Failed to load translation file", { file: fileName, error });
+        }
     }
 }
 export function t(key, locale, fallback) {

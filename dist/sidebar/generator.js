@@ -1,5 +1,6 @@
 import { getMarkdownFiles, getSlugFromPath, readTextFile, exists } from "../utils/fs.js";
 import { parseFrontmatter } from "../utils/frontmatter.js";
+import { DEFAULT_ORDER } from "../core/constants/defaults.js";
 import { join, basename } from "node:path";
 export async function generateSidebar(docsDir, locale, configSidebar) {
     const localeDir = join(docsDir, locale);
@@ -117,8 +118,8 @@ async function buildStructure(files, baseDir, locale) {
         });
     }
     entries.sort((a, b) => {
-        const orderA = a.meta.order ?? 999;
-        const orderB = b.meta.order ?? 999;
+        const orderA = a.meta.order ?? DEFAULT_ORDER;
+        const orderB = b.meta.order ?? DEFAULT_ORDER;
         if (orderA !== orderB)
             return orderA - orderB;
         return a.slug.localeCompare(b.slug);

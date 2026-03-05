@@ -27,5 +27,18 @@
     "title": "Page Not Found",
     "message": "The page you're looking for doesn't exist.",
     "home": "Go Home"
+  },
+  "menu": "Menu",
+  "callouts": {
+    "note": "Note",
+    "tip": "Pro Tip",
+    "info": "Info",
+    "warning": "Warning",
+    "error": "Error",
+    "danger": "Danger"
+  },
+  "code": {
+    "copy": "Copy code",
+    "copied": "Copied!"
   }
 }

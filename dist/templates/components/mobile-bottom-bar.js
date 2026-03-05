@@ -1,10 +1,9 @@
 import { icons } from "./icons.js";
+import { getPageNavTranslations, getMenuLabel } from "../../i18n/accessors.js";
 export function renderMobileBottomBar(options) {
     const { prevPage, nextPage, i18n } = options;
-    const pageNavLabels = i18n.pageNav || {};
-    const prevLabel = pageNavLabels.previous || "Prev";
-    const nextLabel = pageNavLabels.next || "Next";
-    const menuLabel = "Menu";
+    const { previous: prevLabel, next: nextLabel } = getPageNavTranslations(i18n);
+    const menuLabel = getMenuLabel(i18n);
     const prevHtml = prevPage
         ? `<a href="${prevPage.href}" class="nav-btn" data-nav="prev">
         ${icons.chevronLeft}

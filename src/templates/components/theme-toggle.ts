@@ -1,41 +1,32 @@
 import type { Theme } from "../../utils/types.js";
 import { icons, themeIcons } from "./icons.js";
 
-export function renderThemeToggle(themes: Theme[]): string {
-  const currentTheme = themes[0]?.name || "light";
-  const currentIcon = themeIcons[currentTheme] || icons.sun;
+function renderThemeOption(theme: Theme, isActive: boolean = false): string {
+  const icon = themeIcons[theme.name] || icons.sun;
+  return `
+    <button class="theme-option${isActive ? " active" : ""}" data-theme="${theme.name}">
+      <span class="theme-option-icon">${icon}</span>
+      <span class="theme-option-label">${theme.label}</span>
+    </button>`;
+}
 
-  const themeOptions = themes
-    .map((t) => {
-      const icon = themeIcons[t.name] || icons.sun;
-      return `
-        <button class="theme-option" data-theme="${t.name}">
-          <span class="theme-option-icon">${icon}</span>
-          <span class="theme-option-label">${t.label}</span>
-        </button>`;
-    })
+export function renderThemeOptions(themes: Theme[], activeTheme?: string): string {
+  return themes
+    .map((t) => renderThemeOption(t, t.name === activeTheme))
     .join("");
+}
+
+export function renderThemeToggle(themes: Theme[], currentTheme?: string): string {
+  const activeTheme = currentTheme || themes[0]?.name || "light";
+  const currentIcon = themeIcons[activeTheme] || icons.sun;
 
   return `
   <div class="theme-toggle">
-    <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle theme" data-theme="${currentTheme}">
+    <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle theme" data-theme="${activeTheme}">
       <span class="theme-icon-main">${currentIcon}</span>
     </button>
     <div class="theme-dropdown" id="theme-dropdown">
-      ${themeOptions}
+      ${renderThemeOptions(themes, activeTheme)}
     </div>
   </div>`;
-}
-
-export function renderThemeOptions(themes: Theme[]): string {
-  return themes
-    .map((t) => {
-      const icon = themeIcons[t.name] || icons.sun;
-      return `
-        <button class="theme-option" data-theme="${t.name}">
-          <span class="theme-option-icon">${icon}</span>
-          <span class="theme-option-label">${t.label}</span>
-        </button>`;
-    })
-    .join("");
 }

@@ -1,5 +1,6 @@
 import { icons } from "./icons.js";
 import type { TranslationStrings } from "../../i18n/index.js";
+import { getPageNavTranslations, getMenuLabel } from "../../i18n/accessors.js";
 
 export function renderMobileBottomBar(options: {
   prevPage: { href: string; label: string } | null;
@@ -7,10 +8,8 @@ export function renderMobileBottomBar(options: {
   i18n: TranslationStrings;
 }): string {
   const { prevPage, nextPage, i18n } = options;
-  const pageNavLabels = (i18n.pageNav as TranslationStrings) || {};
-  const prevLabel = (pageNavLabels.previous as string) || "Prev";
-  const nextLabel = (pageNavLabels.next as string) || "Next";
-  const menuLabel = "Menu";
+  const { previous: prevLabel, next: nextLabel } = getPageNavTranslations(i18n);
+  const menuLabel = getMenuLabel(i18n);
   
   const prevHtml = prevPage
     ? `<a href="${prevPage.href}" class="nav-btn" data-nav="prev">

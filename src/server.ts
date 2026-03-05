@@ -1,7 +1,7 @@
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { loadConfig, getDocsDir } from "./utils/config.js";
 import { loadTranslations, getTranslations } from "./i18n/index.js";
+import { getNotFoundTranslations } from "./i18n/accessors.js";
 import { parseRoute, isAssetRequest, isSearchRequest } from "./router.js";
 import { generateSidebar } from "./sidebar/generator.js";
 import { buildSearchIndex, createFuseInstance } from "./search/indexer.js";
@@ -12,11 +12,11 @@ import { sanitizeSlug, sanitizeLocale, isValidPath } from "./utils/sanitize.js";
 import { logger } from "./utils/logger.js";
 import { handleError } from "./utils/errors.js";
 import { serve, file as runtimeFile, type ServerOptions } from "./utils/runtime.js";
+import { getMimeType } from "./utils/mime.js";
+import { getPublicDir, getI18nDir } from "./utils/paths.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, "..");
 const DOCS_DIR = getDocsDir();
-const PUBLIC_DIR = join(PROJECT_ROOT, "public");
+const PUBLIC_DIR = getPublicDir();
 
 interface ServerState {
   config: Awaited<ReturnType<typeof loadConfig>>;
@@ -29,7 +29,7 @@ let state: ServerState;
 async function initServer(): Promise<ServerState> {
   try {
     const config = await loadConfig(DOCS_DIR);
-    await loadTranslations(join(PROJECT_ROOT, "src/i18n/translations"));
+    await loadTranslations(getI18nDir());
 
     const searchIndex = await buildSearchIndex(DOCS_DIR, config.locales);
     const fuse = createFuseInstance(searchIndex);
@@ -64,30 +64,6 @@ async function handleRequest(request: Request): Promise<Response> {
   return handlePage(url);
 }
 
-const MIME_TYPES: Record<string, string> = {
-  ".css": "text/css",
-  ".js": "application/javascript",
-  ".json": "application/json",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml",
-  ".webp": "image/webp",
-  ".woff": "font/woff",
-  ".woff2": "font/woff2",
-  ".ttf": "font/ttf",
-  ".eot": "application/vnd.ms-fontobject",
-  ".ico": "image/x-icon",
-  ".html": "text/html",
-  ".xml": "application/xml",
-};
-
-function getMimeType(path: string): string {
-  const ext = path.substring(path.lastIndexOf(".")).toLowerCase();
-  return MIME_TYPES[ext] || "application/octet-stream";
-}
-
 async function handleAsset(url: string): Promise<Response> {
   const path = new URL(url).pathname;
   const filePath = join(PUBLIC_DIR, path);
@@ -105,6 +81,10 @@ async function handleAsset(url: string): Promise<Response> {
 }
 
 async function handleSearch(url: string): Promise<Response> {
+  if (!state) {
+    return Response.json({ results: [] });
+  }
+  
   const searchParams = new URL(url).searchParams;
   const query = searchParams.get("q");
 
@@ -135,6 +115,10 @@ async function handleSearch(url: string): Promise<Response> {
 }
 
 async function handlePage(url: string): Promise<Response> {
+  if (!state) {
+    return handle404("en");
+  }
+  
   const params = parseRoute(url, state.config);
 
   if (!params) {
@@ -218,13 +202,13 @@ async function resolveDocPath(locale: string, slug: string): Promise<string | nu
 }
 
 async function handle404(locale: string = "en"): Promise<Response> {
+  if (!state) {
+    return new Response("Not Found", { status: 404 });
+  }
+  
   const sidebar = await generateSidebar(DOCS_DIR, locale, state.config.sidebar?.[locale]);
   const i18n = getTranslations(locale);
-  const t404 = (i18n as Record<string, unknown>)["404"] as Record<string, string> | undefined;
-  
-  const title = t404?.title || "Page Not Found";
-  const message = t404?.message || "The page you're looking for doesn't exist.";
-  const homeLabel = t404?.home || "Go Home";
+  const { title, message, home } = getNotFoundTranslations(i18n);
   const homeUrl = locale === "en" ? "/" : `/${locale}`;
   
   const pageHtml = renderPage({
@@ -235,7 +219,7 @@ async function handle404(locale: string = "en"): Promise<Response> {
       <div style="text-align: center; padding: 4rem 2rem;">
         <h1 style="font-size: 6rem; margin: 0; color: var(--text-muted);">404</h1>
         <p style="font-size: 1.25rem; color: var(--text-secondary); margin: 1rem 0;">${message}</p>
-        <a href="${homeUrl}" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent-primary); color: white; text-decoration: none; border-radius: 6px;">${homeLabel}</a>
+        <a href="${homeUrl}" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent-primary); color: white; text-decoration: none; border-radius: 6px;">${home}</a>
       </div>
     `,
     sidebar,

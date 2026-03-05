@@ -4,22 +4,24 @@ import { loadConfig } from "../utils/config.js";
 import { generateSidebar } from "../sidebar/generator.js";
 import { buildSearchIndex } from "../search/indexer.js";
 import { readTextFile, exists, getMarkdownFiles, getSlugFromPath } from "../utils/fs.js";
-import { loadTranslations } from "../i18n/index.js";
+import { loadTranslations, getTranslations } from "../i18n/index.js";
+import { getNotFoundTranslations } from "../i18n/accessors.js";
 import { themes } from "../themes/registry.js";
 import { parseDocument, renderPage } from "../core/renderer/index.js";
 import { logger } from "../utils/logger.js";
 import { isValidPath } from "../utils/sanitize.js";
 import { write as runtimeWrite } from "../utils/runtime.js";
-const PROJECT_ROOT = join(import.meta.dir, "../..");
-const DOCS_DIR = join(process.cwd(), "docs");
-const DIST_DIR = join(process.cwd(), "dist");
-const PUBLIC_DIR = join(PROJECT_ROOT, "public");
+import { renderHead } from "../templates/head.js";
+import { getDocsDir, getDistDir, getPublicDir, getI18nDir } from "../utils/paths.js";
+const DOCS_DIR = getDocsDir();
+const DIST_DIR = getDistDir();
+const PUBLIC_DIR = getPublicDir();
 async function build() {
     console.log("🔨 Building static site...");
     logger.info("Build started");
     try {
         const config = await loadConfig(DOCS_DIR);
-        await loadTranslations(join(PROJECT_ROOT, "src/i18n/translations"));
+        await loadTranslations(getI18nDir());
         const searchIndex = await buildSearchIndex(DOCS_DIR, config.locales);
         const ctx = { config, searchIndex };
         await mkdir(DIST_DIR, { recursive: true });
@@ -31,8 +33,8 @@ async function build() {
         }
         const searchIndexPath = join(DIST_DIR, "search-index.json");
         await runtimeWrite(searchIndexPath, JSON.stringify(searchIndex));
-        await write404Page();
-        await writeIndexRedirect();
+        await write404Pages(ctx);
+        await writeIndexRedirect(ctx.config.defaultLocale);
         console.log("✅ Build complete!");
         console.log(`📁 Output: ${DIST_DIR}`);
         logger.info("Build completed", {
@@ -93,29 +95,43 @@ async function buildPage(ctx, locale, filePath, sidebar) {
         throw error;
     }
 }
-async function write404Page() {
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Page Not Found</title>
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/themes.css">
-  <link rel="stylesheet" href="/assets/css/layout.css">
-</head>
+async function write404Pages(ctx) {
+    for (const locale of ctx.config.locales) {
+        const i18n = getTranslations(locale);
+        const { title, message, home } = getNotFoundTranslations(i18n);
+        const homeUrl = locale === "en" ? "/" : `/${locale}`;
+        const html = `<!DOCTYPE html>
+<html lang="${locale}">
+${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description: message })}
 <body>
-  <div class="error-page">
-    <h1>404</h1>
-    <p>Page not found</p>
-    <a href="/">Go Home</a>
+  <div class="error-page" style="text-align: center; padding: 4rem 2rem; min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h1 style="font-size: 6rem; margin: 0; color: var(--text-muted);">404</h1>
+    <p style="font-size: 1.25rem; color: var(--text-secondary); margin: 1rem 0;">${message}</p>
+    <a href="${homeUrl}" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent-primary); color: white; text-decoration: none; border-radius: 6px;">${home}</a>
   </div>
+  <script>
+    (function() {
+      var theme = localStorage.getItem('theme');
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </body>
 </html>`;
-    await runtimeWrite(join(DIST_DIR, "404.html"), html);
+        if (locale === "en") {
+            await runtimeWrite(join(DIST_DIR, "404.html"), html);
+        }
+        await runtimeWrite(join(DIST_DIR, locale, "404.html"), html);
+    }
 }
-async function writeIndexRedirect() {
-    const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=/intro"></head><body><a href="/intro">Redirecting...</a></body></html>`;
+async function writeIndexRedirect(defaultLocale) {
+    const redirectUrl = defaultLocale === "en" ? "/intro" : `/${defaultLocale}/intro`;
+    const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
     await runtimeWrite(join(DIST_DIR, "index.html"), html);
 }
 build().catch(console.error);

@@ -12,6 +12,25 @@ const defaultConfig: DocConfig = {
   locales: ["en"],
 };
 
+function isValidLocale(locale: unknown): locale is string {
+  return typeof locale === "string" && /^[a-z]{2}(-[a-z]{2})?$/.test(locale);
+}
+
+function isDocConfigPartial(value: unknown): value is Partial<DocConfig> {
+  if (typeof value !== "object" || value === null) return false;
+  const obj = value as Record<string, unknown>;
+  
+  if ("title" in obj && typeof obj.title !== "string") return false;
+  if ("description" in obj && typeof obj.description !== "string") return false;
+  if ("defaultLocale" in obj && !isValidLocale(obj.defaultLocale)) return false;
+  if ("locales" in obj) {
+    if (!Array.isArray(obj.locales)) return false;
+    if (!obj.locales.every(isValidLocale)) return false;
+  }
+  
+  return true;
+}
+
 export function validateConfig(config: Partial<DocConfig>): DocConfig {
   const errors: string[] = [];
 
@@ -61,7 +80,12 @@ export async function loadConfig(docsDir: string): Promise<DocConfig> {
   
   try {
     const content = await readTextFile(configPath);
-    const parsed = parseYaml(content) as Partial<DocConfig>;
+    const parsed = parseYaml(content);
+    
+    if (!isDocConfigPartial(parsed)) {
+      logger.warn("Config file has invalid structure, using defaults", { path: configPath });
+      return defaultConfig;
+    }
     
     const config = validateConfig(parsed);
     

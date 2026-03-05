@@ -1,6 +1,7 @@
 import { readdir } from "node:fs/promises";
 import { join, relative, resolve } from "node:path";
 import { file as runtimeFile, write as runtimeWrite, exists as runtimeExists } from "./runtime.js";
+import { logger } from "./logger.js";
 
 export async function exists(path: string): Promise<boolean> {
   return runtimeExists(path);
@@ -14,7 +15,8 @@ export async function readJsonFile<T>(path: string): Promise<T | null> {
   try {
     const data = await runtimeFile(path).json();
     return data as T;
-  } catch {
+  } catch (error) {
+    logger.debug("Failed to read JSON file", { path, error });
     return null;
   }
 }
@@ -58,8 +60,14 @@ export function getSlugFromPath(basePath: string, filePath: string): string {
   return rel.replace(/\.md$/, "").replace(/\\/g, "/");
 }
 
-export async function ensureDir(path: string): Promise<void> {
-  await runtimeWrite(path + "/.gitkeep", "").catch(() => {});
+export async function ensureDir(path: string): Promise<boolean> {
+  try {
+    await runtimeWrite(path + "/.gitkeep", "");
+    return true;
+  } catch (error) {
+    logger.warn("Failed to ensure directory", { path, error });
+    return false;
+  }
 }
 
 export function getParentDir(path: string): string {

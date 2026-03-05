@@ -1,12 +1,8 @@
 import type { TranslationStrings } from "../../i18n/index.js";
-
-interface FooterTranslations {
-  poweredBy?: string;
-}
+import { getFooterTranslations } from "../../i18n/accessors.js";
 
 export function renderFooter(i18n: TranslationStrings): string {
-  const footerI18n = i18n.footer as FooterTranslations | undefined;
-  const poweredBy = footerI18n?.poweredBy || "Powered by";
+  const { poweredBy } = getFooterTranslations(i18n);
   
   return `
   <footer class="footer">

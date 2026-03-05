@@ -1,11 +1,16 @@
 import { glob, file as runtimeFile } from "../utils/runtime.js";
 import { join } from "node:path";
+import { logger } from "../utils/logger.js";
 
 export interface TranslationStrings {
   [key: string]: string | TranslationStrings;
 }
 
 const translations: Record<string, TranslationStrings> = {};
+
+function isTranslationStrings(value: unknown): value is TranslationStrings {
+  return typeof value === "object" && value !== null;
+}
 
 export async function loadTranslations(i18nDir: string): Promise<void> {
   const scanner = glob("*.json");
@@ -14,8 +19,17 @@ export async function loadTranslations(i18nDir: string): Promise<void> {
     const fileName = file.split("/").pop() || file;
     const locale = fileName.replace(".json", "");
     const fullPath = join(i18nDir, file);
-    const content = await runtimeFile(fullPath).json();
-    translations[locale] = content as TranslationStrings;
+    
+    try {
+      const content = await runtimeFile(fullPath).json();
+      if (isTranslationStrings(content)) {
+        translations[locale] = content;
+      } else {
+        logger.warn("Invalid translation file structure", { file: fileName });
+      }
+    } catch (error) {
+      logger.error("Failed to load translation file", { file: fileName, error });
+    }
   }
 }
 

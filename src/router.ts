@@ -45,28 +45,6 @@ export function parseRoute(url: string, config: DocConfig): RouteParams | null {
   };
 }
 
-export function getDocPath(params: RouteParams, docsDir: string): string {
-  const { locale, slug } = params;
-  
-  const candidates = [
-    `${docsDir}/${locale}/${slug}.md`,
-    `${docsDir}/${locale}/${slug}/index.md`,
-    `${docsDir}/${locale}/${slug}.mdx`,
-    `${docsDir}/${locale}/${slug}/index.mdx`,
-  ];
-  
-  return candidates.join(":");
-}
-
-export function buildUrl(locale: string, path: string[]): string {
-  if (path.length === 0 || (path.length === 1 && path[0] === "index")) {
-    return locale === "en" ? "/" : `/${locale}`;
-  }
-  
-  const slug = path.join("/");
-  return locale === "en" ? `/${slug}` : `/${locale}/${slug}`;
-}
-
 export function isAssetRequest(url: string): boolean {
   const path = new URL(url, "http://localhost").pathname;
   return (

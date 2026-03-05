@@ -1,4 +1,5 @@
 import type { TranslationStrings } from "../../i18n/index.js";
+import { getPageNavTranslations } from "../../i18n/accessors.js";
 
 export function renderPageNav(options: {
   prevPage: { href: string; label: string } | null;
@@ -6,9 +7,7 @@ export function renderPageNav(options: {
   i18n: TranslationStrings;
 }): string {
   const { prevPage, nextPage, i18n } = options;
-  const pageNavLabels = (i18n.pageNav as TranslationStrings) || {};
-  const prevLabel = (pageNavLabels.previous as string) || "Previous";
-  const nextLabel = (pageNavLabels.next as string) || "Next";
+  const { previous: prevLabel, next: nextLabel } = getPageNavTranslations(i18n);
   
   const prevHtml = prevPage
     ? `<a href="${prevPage.href}" class="page-nav-link prev">

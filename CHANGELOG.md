@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-03-05
+
+### Added
+- `src/utils/mime.ts` - Centralized MIME type utilities
+- `src/i18n/accessors.ts` - Type-safe i18n accessor functions
+- `src/utils/paths.ts` - Path resolution utilities
+- `src/utils/validation.ts` - Type guards for config and metadata
+- i18n keys: `menu`, `callouts.*`, `code.*`
+
+### Changed
+- Refactored duplicate MIME_TYPES code into shared module
+- Improved type safety with typed i18n accessors
+- Better null/undefined checks in server request handlers
+- Improved error handling in i18n JSON loading
+- Better runtime validation for YAML config parsing
+- Simplified default constants (removed unused exports)
+- Improved 404 page generation with i18n support per locale
+
+### Fixed
+- `state` undefined check in server.ts before accessing `state.fuse`
+- `themes/builder.ts` now uses `runtimeWrite` for Node.js compatibility
+- `ensureDir` now returns boolean and logs errors instead of silently ignoring
+
+### Removed
+- Dead code: `getDocPath`, `buildUrl` from router.ts
+- Dead code: `EXTERNAL_SCRIPTS` from cdn.ts
+- Unused constants: `untitled`, `searchPlaceholder`, `docsLabel`, `poweredBy`
+
 ## [1.0.0] - 2025-03-05
 
 ### Added
