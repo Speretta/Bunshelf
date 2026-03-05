@@ -5,7 +5,8 @@ A modern, fast, and beautiful documentation generator with built-in themes, sear
 ![Bunshelf](https://img.shields.io/npm/v/bunshelf)
 ![License](https://img.shields.io/npm/l/bunshelf)
 
-![Bunshelf Preview](./public/assets/images/bunshelf-preview.png)
+![Bunshelf Desktop Preview](./public/assets/images/bunshelf-desktop.png)
+![Bunshelf Mobile Preview](./public/assets/images/bunshelf-mobile.png)
 
 ## Features
 
