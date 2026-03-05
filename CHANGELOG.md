@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.5] - 2025-03-05
+
+### Fixed
+- Fixed GitHub Action for screenshot automation:
+  - Added Chrome installation step for Puppeteer
+  - Improved server wait mechanism (60s timeout with HTTP status check)
+  - Enhanced error handling and logging
+  - Increased screenshot timeout to 60s
+  - Added `networkidle0` wait for full page load
+
+### Changed
+- Screenshot script now has better error messages and debugging output
+- GitHub Action won't trigger on screenshot commits (uses `[skip ci]`)
+
 ## [1.2.4] - 2025-03-05
 
 ### Added
