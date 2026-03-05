@@ -6,6 +6,7 @@ locales:
   - tr
 theme:
   default: light
+logo: /assets/images/logo.webp
 sidebar:
   en:
     - label: Getting Started
@@ -16,10 +17,22 @@ sidebar:
           href: /getting-started/installation
         - label: Quick Start
           href: /getting-started/quick-start
+    - label: Features
+      items:
+        - label: Markdown Syntax
+          href: /features/markdown-syntax
+        - label: Themes
+          href: /features/themes
+        - label: Search
+          href: /features/search
+        - label: Internationalization
+          href: /features/i18n
     - label: Advanced
       items:
         - label: Configuration
           href: /advanced/configuration
+        - label: Customization
+          href: /advanced/customization
   tr:
     - label: Başlarken
       items:
@@ -29,7 +42,19 @@ sidebar:
           href: /tr/getting-started/installation
         - label: Hızlı Başlangıç
           href: /tr/getting-started/quick-start
+    - label: Özellikler
+      items:
+        - label: Markdown Sözdizimi
+          href: /tr/features/markdown-syntax
+        - label: Temalar
+          href: /tr/features/themes
+        - label: Arama
+          href: /tr/features/search
+        - label: Çoklu Dil Desteği
+          href: /tr/features/i18n
     - label: Gelişmiş
       items:
         - label: Yapılandırma
           href: /tr/advanced/configuration
+        - label: Özelleştirme
+          href: /tr/advanced/customization
