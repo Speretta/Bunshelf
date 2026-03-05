@@ -13,8 +13,17 @@ const colorMap = {
 };
 const VALID_COLOR_REGEX = /^#[0-9a-fA-F]{3,6}$/;
 export function processColoredText(content) {
-    const pattern = /\{(#[0-9a-fA-F]{3,6}|[a-z]+)\}([\s\S]*?)\{\/\}/g;
-    return content.replace(pattern, (match, colorSpec, text) => {
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const codeBlocks = [];
+    const contentWithPlaceholders = content.replace(codeBlockRegex, (match) => {
+        codeBlocks.push(match);
+        return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    });
+    const pattern = /\\?\{(#[0-9a-fA-F]{3,6}|[a-z]+)\}([\s\S]*?)\{\/\}/g;
+    const processed = contentWithPlaceholders.replace(pattern, (match, colorSpec, text) => {
+        if (match.startsWith('\\')) {
+            return match.substring(1);
+        }
         let color;
         if (colorSpec.startsWith("#")) {
             if (!VALID_COLOR_REGEX.test(colorSpec)) {
@@ -31,6 +40,9 @@ export function processColoredText(content) {
         const safeColor = escapeAttr(color);
         const safeText = escapeHtml(text);
         return `<span style="color: ${safeColor}" class="colored-text">${safeText}</span>`;
+    });
+    return processed.replace(/__CODE_BLOCK_(\d+)__/g, (_, index) => {
+        return codeBlocks[parseInt(index)] || '';
     });
 }
 //# sourceMappingURL=colored-text.js.map

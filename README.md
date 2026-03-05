@@ -131,27 +131,21 @@ hide: false
 
 ### Colored Text
 
-```html
-<span style="color: #ef4444" class="colored-text">Red text</span>
-<span style="color: #22c55e" class="colored-text">Green text</span>
-<span style="color: #3b82f6" class="colored-text">Blue text</span>
+```markdown
+{red}Red text{/}
+{green}Green text{/}
+{blue}Blue text{/}
 ```
 
 ### Callouts
 
-```html
-<div class="callout callout-note">
-  <div class="callout-title">
-    <span class="callout-icon">📝</span>
-    <span>Note</span>
-  </div>
-  <div class="callout-content">
-    <p>Important information here.</p>
-  </div>
-</div>
+```markdown
+::: note Note
+Important information here.
+:::
 ```
 
-Types: `callout-note`, `callout-tip`, `callout-warning`, `callout-error`
+Types: `note`, `tip`, `info`, `warning`, `error`, `danger`
 
 ### Code Blocks with Language Selector
 

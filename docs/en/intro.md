@@ -10,6 +10,7 @@ order: 1
 
 Welcome to {blue}Bunshelf{/}! A lightweight, blazing-fast documentation website generator powered by {green}Bun.js{/}.
 
+
 ## What is Bunshelf?
 
 Bunshelf is a {accent}modern documentation generator{/} designed for developers who value simplicity and performance. Unlike heavy alternatives like Docusaurus, it doesn't require React or complex build pipelines. Just write Markdown, and get a beautiful documentation site.

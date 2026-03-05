@@ -23,7 +23,15 @@ export function setCalloutMarkdownParser(parser: MarkdownIt): void {
 }
 
 export function processCallouts(content: string): string {
-  const lines = content.split("\n");
+  const codeBlockRegex = /```[\s\S]*?```/g;
+  const codeBlocks: string[] = [];
+  
+  const contentWithPlaceholders = content.replace(codeBlockRegex, (match) => {
+    codeBlocks.push(match);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  });
+  
+  const lines = contentWithPlaceholders.split("\n");
   const result: string[] = [];
   let inCallout = false;
   let calloutType = "";
@@ -73,5 +81,9 @@ export function processCallouts(content: string): string {
     }
   }
   
-  return result.join("\n");
+  const processedContent = result.join("\n");
+  
+  return processedContent.replace(/__CODE_BLOCK_(\d+)__/g, (_, index) => {
+    return codeBlocks[parseInt(index)] || '';
+  });
 }
