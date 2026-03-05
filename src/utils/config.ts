@@ -10,6 +10,7 @@ const defaultConfig: DocConfig = {
   description: "A fast documentation website generator",
   defaultLocale: "en",
   locales: ["en"],
+  base: "",
 };
 
 function isValidLocale(locale: unknown): locale is string {
@@ -23,6 +24,7 @@ function isDocConfigPartial(value: unknown): value is Partial<DocConfig> {
   if ("title" in obj && typeof obj.title !== "string") return false;
   if ("description" in obj && typeof obj.description !== "string") return false;
   if ("defaultLocale" in obj && !isValidLocale(obj.defaultLocale)) return false;
+  if ("base" in obj && typeof obj.base !== "string") return false;
   if ("locales" in obj) {
     if (!Array.isArray(obj.locales)) return false;
     if (!obj.locales.every(isValidLocale)) return false;
@@ -67,6 +69,7 @@ export function validateConfig(config: Partial<DocConfig>): DocConfig {
     ...config,
     title: config.title?.trim() || defaultConfig.title,
     description: config.description?.trim() || defaultConfig.description,
+    base: config.base || defaultConfig.base,
   };
 }
 

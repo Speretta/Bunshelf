@@ -3,6 +3,7 @@ export interface DocConfig {
   description: string;
   defaultLocale: string;
   locales: string[];
+  base?: string;
   sidebar?: SidebarConfig;
   theme?: {
     default: string;

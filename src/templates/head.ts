@@ -7,8 +7,21 @@ export function renderHead(options: {
   siteTitle: string;
   description: string;
   logo?: string;
+  base?: string;
 }): string {
-  const { title, siteTitle, description, logo = DEFAULT_LOGO } = options;
+  const { title, siteTitle, description, logo = DEFAULT_LOGO, base = "" } = options;
+  
+  const prefixedLogo = base + logo;
+  const prefixedBase = base + "/assets/css/base.css";
+  const prefixedThemes = base + "/assets/css/themes.css";
+  const prefixedLayout = base + "/assets/css/layout.css";
+  const prefixedSidebar = base + "/assets/css/sidebar.css";
+  const prefixedCallouts = base + "/assets/css/callouts.css";
+  const prefixedSearch = base + "/assets/css/search.css";
+  const prefixedThemeToggle = base + "/assets/css/theme-toggle.css";
+  const prefixedSyntax = base + "/assets/css/syntax.css";
+  const prefixedPageNav = base + "/assets/css/page-nav.css";
+  const prefixedMainJs = base + "/assets/js/main.js";
 
   return `
 <head>
@@ -17,16 +30,16 @@ export function renderHead(options: {
   <meta name="description" content="${description}">
   <meta name="color-scheme" content="light dark">
   <title>${title} | ${siteTitle}</title>
-  <link rel="icon" type="image/webp" href="${logo}">
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/themes.css">
-  <link rel="stylesheet" href="/assets/css/layout.css">
-  <link rel="stylesheet" href="/assets/css/sidebar.css">
-  <link rel="stylesheet" href="/assets/css/callouts.css">
-  <link rel="stylesheet" href="/assets/css/search.css">
-  <link rel="stylesheet" href="/assets/css/theme-toggle.css">
-  <link rel="stylesheet" href="/assets/css/syntax.css">
-  <link rel="stylesheet" href="/assets/css/page-nav.css">
+  <link rel="icon" type="image/webp" href="${prefixedLogo}">
+  <link rel="stylesheet" href="${prefixedBase}">
+  <link rel="stylesheet" href="${prefixedThemes}">
+  <link rel="stylesheet" href="${prefixedLayout}">
+  <link rel="stylesheet" href="${prefixedSidebar}">
+  <link rel="stylesheet" href="${prefixedCallouts}">
+  <link rel="stylesheet" href="${prefixedSearch}">
+  <link rel="stylesheet" href="${prefixedThemeToggle}">
+  <link rel="stylesheet" href="${prefixedSyntax}">
+  <link rel="stylesheet" href="${prefixedPageNav}">
   <script src="${CDN.fuseJs}"></script>
   <script src="${CDN.highlightJs}"></script>
   <script>
@@ -41,6 +54,6 @@ export function renderHead(options: {
       }
     })();
   </script>
-  <script src="/assets/js/main.js" defer></script>
+  <script src="${prefixedMainJs}" defer></script>
 </head>`;
 }

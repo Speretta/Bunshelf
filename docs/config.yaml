@@ -1,5 +1,6 @@
 title: Bunshelf
 description: A fast, modular documentation website generator powered by Bun.js
+base: /Bunshelf
 defaultLocale: en
 locales:
   - en
