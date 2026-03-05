@@ -2,8 +2,8 @@
 
 A modern, fast, and beautiful documentation generator with built-in themes, search, and i18n support. Built with Bun.
 
-![Bunshelf](https://img.shields.io/npm/v/bunshelf)
-![License](https://img.shields.io/npm/l/bunshelf)
+[![npm version](https://img.shields.io/npm/v/bunshelf.svg)](https://www.npmjs.com/package/bunshelf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ![Bunshelf Desktop Preview](./public/assets/images/bunshelf-desktop.png)
 
