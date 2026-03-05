@@ -7,9 +7,7 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "bunshelf": "./dist/cli.js"
-  },
+  "bin": "./dist/cli.js",
   "exports": {
     ".": {
       "import": "./dist/index.js",
