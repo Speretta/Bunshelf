@@ -38,8 +38,38 @@ sidebar:
 | `description` | string | - | SEO için meta açıklama |
 | `defaultLocale` | string | "en" | Varsayılan dil kodu |
 | `locales` | string[] | ["en"] | Mevcut dillerin listesi |
-| `base` | string | "" | Alt dizin dağıtımı için temel URL yolu |
+| `base` | string | "" | Alt dizin dağıtımı için temel URL yolu (GitHub Actions'da otomatik tespit) |
 | `logo` | string | - | Logo resmi yolu |
+| `homePage` | string | - | Özel ana sayfa yolu (ör. `/welcome/intro`) |
+
+### Ana Sayfa Yapılandırması
+
+`homePage` seçeneği, dokümantasyonunuz için özel bir açılış sayfası tanımlamanıza olanak tanır:
+
+```yaml
+homePage: /welcome/intro
+```
+
+Bu şunları etkiler:
+
+- {green}Kök yönlendirme{/} - Kullanıcılar `/` veya `/{locale}/` adresini ziyaret ettiğinde, ana sayfanıza yönlendirilir
+- {green}404 sayfaları{/} - 404 sayfalarındaki "Ana Sayfa" butonu ana sayfanıza bağlantı verir
+- {green}Gezinme{/} - Logo ve ana sayfa bağlantıları ana sayfanıza işaret eder
+
+#### Akıllı Fallback
+
+`homePage` tanımlanmamışsa, Bunshelf bu fallback stratejisini kullanır:
+
+1. Kenar çubuğu yapılandırmasındaki ilk sayfa
+2. Varsayılan `/intro` sayfası
+3. Kök yol `/`
+
+::: tip Örnek
+Dokümantasyon yapınız `/welcome/intro` ise `/intro` yerine, şunu ayarlayın:
+```yaml
+homePage: /welcome/intro
+```
+:::
 
 ### Temel URL Yapılandırması
 
@@ -55,6 +85,26 @@ base: /proje
 # Özel alan adı veya kök dağıtım için
 base: ""
 ```
+
+::: note Otomatik Tespit
+GitHub Actions ile dağıtım yaparken, `base` URL'si `GITHUB_REPOSITORY` ortam değişkeninden {green}otomatik olarak tespit edilir{/}. GitHub Pages dağıtımları için `config.yaml` dosyasında manuel olarak ayarlamanıza gerek yoktur.
+:::
+
+::: tip Manuel Geçersiz Kılma
+Otomatik tespiti geçersiz kılmak için `BASE_URL` ortam değişkenini ayarlayın:
+```bash
+BASE_URL=/ozel-yol bun run build
+```
+:::
+
+#### Temel URL Önceliği
+
+Bunshelf, temel URL'yi bu sırayla belirler:
+
+1. {accent}`BASE_URL` ortam değişkeni{/} (en yüksek öncelik)
+2. {accent}`GITHUB_REPOSITORY` ortam değişkeni{/} (GitHub Actions için)
+3. {accent}`config.yaml'da base`{/}
+4. Boş dize (varsayılan)
 
 ::: note Önemli
 `base` seçeneği, tüm dahili bağlantıları, varlıkları ve gezinme URL'lerini otomatik olarak önekler. Bu, dokümantasyonunuzun bir alt dizinde barındırıldığında doğru çalışmasını sağlar.

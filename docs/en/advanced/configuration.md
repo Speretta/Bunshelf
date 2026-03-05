@@ -38,8 +38,38 @@ sidebar:
 | `description` | string | - | Meta description for SEO |
 | `defaultLocale` | string | "en" | Default language code |
 | `locales` | string[] | ["en"] | List of available locales |
-| `base` | string | "" | Base URL path for subdirectory deployment |
+| `base` | string | "" | Base URL path for subdirectory deployment (auto-detected in GitHub Actions) |
 | `logo` | string | - | Path to logo image |
+| `homePage` | string | - | Custom home page path (e.g., `/welcome/intro`) |
+
+### Home Page Configuration
+
+The `homePage` option allows you to define a custom landing page for your documentation:
+
+```yaml
+homePage: /welcome/intro
+```
+
+This affects:
+
+- {green}Root redirect{/} - When users visit `/` or `/{locale}/`, they'll be redirected to your home page
+- {green}404 pages{/} - The "Go Home" button on 404 pages will link to your home page
+- {green}Navigation{/} - Logo and home links point to your home page
+
+#### Smart Fallback
+
+If `homePage` is not defined, Bunshelf uses this fallback strategy:
+
+1. First page in sidebar configuration
+2. Default `/intro` page
+3. Root path `/`
+
+::: tip Example
+If your documentation structure is `/welcome/intro` instead of `/intro`, set:
+```yaml
+homePage: /welcome/intro
+```
+:::
 
 ### Base URL Configuration
 
@@ -55,6 +85,26 @@ base: /project
 # For custom domain or root deployment
 base: ""
 ```
+
+::: note Automatic Detection
+When deploying with GitHub Actions, the `base` URL is {green}automatically detected{/} from the `GITHUB_REPOSITORY` environment variable. You don't need to set it manually in `config.yaml` for GitHub Pages deployments.
+:::
+
+::: tip Manual Override
+To override automatic detection, set the `BASE_URL` environment variable:
+```bash
+BASE_URL=/custom-path bun run build
+```
+:::
+
+#### Base URL Priority
+
+Bunshelf determines the base URL in this order:
+
+1. {accent}`BASE_URL` environment variable{/} (highest priority)
+2. {accent}`GITHUB_REPOSITORY` environment variable{/} (for GitHub Actions)
+3. {accent}`base` in config.yaml{/}
+4. Empty string (default)
 
 ::: note Important
 The `base` option automatically prefixes all internal links, assets, and navigation URLs. This ensures your documentation works correctly when hosted in a subdirectory.
