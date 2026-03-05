@@ -66,7 +66,7 @@ export function renderPage(options: PageRenderOptions): string {
 <html lang="${locale}">
 ${renderHead({ title, siteTitle: config.title, description, logo: config.logo, base })}
 <body>
-  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo ? base + config.logo : undefined })}
+  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo ? base + config.logo : base + "/assets/images/logo.webp" })}
 
   <div class="layout">
     ${renderSidebarPanel({ localeLinks, sidebarHtml })}
