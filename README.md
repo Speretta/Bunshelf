@@ -4,6 +4,7 @@ A modern, fast, and beautiful documentation generator with built-in themes, sear
 
 [![npm version](https://img.shields.io/npm/v/bunshelf.svg)](https://www.npmjs.com/package/bunshelf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Update Screenshots](https://github.com/Speretta/Bunshelf/actions/workflows/update-screenshots.yml/badge.svg)](https://github.com/Speretta/Bunshelf/actions/workflows/update-screenshots.yml)
 
 ![Bunshelf Desktop Preview](./public/assets/images/bunshelf-desktop.png)
 
