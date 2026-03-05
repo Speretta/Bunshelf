@@ -40,7 +40,7 @@ async function build() {
         const searchIndexPath = join(DIST_DIR, "search-index.json");
         await runtimeWrite(searchIndexPath, JSON.stringify(searchIndex));
         await write404Pages(ctx);
-        await writeIndexRedirect(ctx.config.defaultLocale, ctx.config.base);
+        await writeIndexRedirect(ctx.config.defaultLocale, ctx.config.base, ctx.config.homePage, ctx.config.sidebar?.[ctx.config.defaultLocale]);
         console.log("✅ Build complete!");
         console.log(`📁 Output: ${DIST_DIR}`);
         logger.info("Build completed", {
@@ -104,9 +104,19 @@ async function buildPage(ctx, locale, filePath, sidebar) {
 async function write404Pages(ctx) {
     const base = ctx.config.base || "";
     for (const locale of ctx.config.locales) {
+        const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale]);
         const i18n = getTranslations(locale);
         const { title, message, home } = getNotFoundTranslations(i18n);
-        const homeUrl = locale === "en" ? base + "/" : base + `/${locale}`;
+        let homeUrl;
+        if (ctx.config.homePage) {
+            homeUrl = locale === "en"
+                ? `${base}${ctx.config.homePage}`
+                : `${base}/${locale}${ctx.config.homePage}`;
+        }
+        else {
+            const firstPage = sidebar?.[0]?.items?.[0]?.href;
+            homeUrl = firstPage ? `${base}${firstPage}` : (locale === "en" ? `${base}/` : `${base}/${locale}`);
+        }
         const html = `<!DOCTYPE html>
 <html lang="${locale}">
 ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description: message, base })}
@@ -136,8 +146,15 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
         await runtimeWrite(join(DIST_DIR, locale, "404.html"), html);
     }
 }
-async function writeIndexRedirect(defaultLocale, base = "") {
-    const redirectUrl = defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`;
+async function writeIndexRedirect(defaultLocale, base = "", homePage, sidebar) {
+    let redirectUrl;
+    if (homePage) {
+        redirectUrl = defaultLocale === "en" ? `${base}${homePage}` : `${base}/${defaultLocale}${homePage}`;
+    }
+    else {
+        const firstPage = sidebar?.[0]?.items?.[0]?.href;
+        redirectUrl = firstPage ? `${base}${firstPage}` : (defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`);
+    }
     const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
     await runtimeWrite(join(DIST_DIR, "index.html"), html);
 }

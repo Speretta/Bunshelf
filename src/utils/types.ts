@@ -9,6 +9,7 @@ export interface DocConfig {
     default: string;
   };
   logo?: string;
+  homePage?: string;
 }
 
 export interface SidebarConfig {

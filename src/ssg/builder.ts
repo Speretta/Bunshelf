@@ -13,6 +13,7 @@ import { isValidPath } from "../utils/sanitize.js";
 import { write as runtimeWrite } from "../utils/runtime.js";
 import { renderHead } from "../templates/head.js";
 import { getDocsDir, getDistDir, getPublicDir, getI18nDir } from "../utils/paths.js";
+import type { SidebarItem } from "../utils/types.js";
 
 const DOCS_DIR = getDocsDir();
 const DIST_DIR = getDistDir();
@@ -56,7 +57,12 @@ async function build(): Promise<void> {
     await runtimeWrite(searchIndexPath, JSON.stringify(searchIndex));
 
     await write404Pages(ctx);
-    await writeIndexRedirect(ctx.config.defaultLocale, ctx.config.base);
+    await writeIndexRedirect(
+      ctx.config.defaultLocale, 
+      ctx.config.base, 
+      ctx.config.homePage, 
+      ctx.config.sidebar?.[ctx.config.defaultLocale]
+    );
 
     console.log("✅ Build complete!");
     console.log(`📁 Output: ${DIST_DIR}`);
@@ -137,9 +143,19 @@ async function write404Pages(ctx: BuildContext): Promise<void> {
   const base = ctx.config.base || "";
   
   for (const locale of ctx.config.locales) {
+    const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale]);
     const i18n = getTranslations(locale);
     const { title, message, home } = getNotFoundTranslations(i18n);
-    const homeUrl = locale === "en" ? base + "/" : base + `/${locale}`;
+    
+    let homeUrl: string;
+    if (ctx.config.homePage) {
+      homeUrl = locale === "en" 
+        ? `${base}${ctx.config.homePage}` 
+        : `${base}/${locale}${ctx.config.homePage}`;
+    } else {
+      const firstPage = sidebar?.[0]?.items?.[0]?.href;
+      homeUrl = firstPage ? `${base}${firstPage}` : (locale === "en" ? `${base}/` : `${base}/${locale}`);
+    }
     
     const html = `<!DOCTYPE html>
 <html lang="${locale}">
@@ -172,8 +188,16 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
   }
 }
 
-async function writeIndexRedirect(defaultLocale: string, base: string = ""): Promise<void> {
-  const redirectUrl = defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`;
+async function writeIndexRedirect(defaultLocale: string, base: string = "", homePage?: string, sidebar?: SidebarItem[]): Promise<void> {
+  let redirectUrl: string;
+  
+  if (homePage) {
+    redirectUrl = defaultLocale === "en" ? `${base}${homePage}` : `${base}/${defaultLocale}${homePage}`;
+  } else {
+    const firstPage = sidebar?.[0]?.items?.[0]?.href;
+    redirectUrl = firstPage ? `${base}${firstPage}` : (defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`);
+  }
+  
   const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
   await runtimeWrite(join(DIST_DIR, "index.html"), html);
 }

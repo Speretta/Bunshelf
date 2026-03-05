@@ -147,7 +147,23 @@ async function handlePage(url: string): Promise<Response> {
   let docPath = await resolveDocPath(safeLocale, safeSlug || "index");
 
   if (!docPath && slug === "index") {
-    const redirectTarget = safeLocale === "en" ? "/intro" : `/${safeLocale}/intro`;
+    let redirectTarget: string;
+    
+    if (state.config.homePage) {
+      redirectTarget = safeLocale === "en" 
+        ? state.config.homePage 
+        : `/${safeLocale}${state.config.homePage}`;
+    } else {
+      const sidebar = state.config.sidebar?.[safeLocale];
+      const firstPage = sidebar?.[0]?.items?.[0]?.href;
+      
+      if (firstPage) {
+        redirectTarget = firstPage;
+      } else {
+        redirectTarget = safeLocale === "en" ? "/intro" : `/${safeLocale}/intro`;
+      }
+    }
+    
     return Response.redirect(new URL(redirectTarget, url), 302);
   }
 
@@ -215,7 +231,16 @@ async function handle404(locale: string = "en"): Promise<Response> {
   const i18n = getTranslations(locale);
   const { title, message, home } = getNotFoundTranslations(i18n);
   const base = state.config.base || "";
-  const homeUrl = locale === "en" ? `${base}/` : `${base}/${locale}`;
+  
+  let homeUrl: string;
+  if (state.config.homePage) {
+    homeUrl = locale === "en" 
+      ? `${base}${state.config.homePage}` 
+      : `${base}/${locale}${state.config.homePage}`;
+  } else {
+    const firstPage = sidebar?.[0]?.items?.[0]?.href;
+    homeUrl = firstPage ? `${base}${firstPage}` : (locale === "en" ? `${base}/` : `${base}/${locale}`);
+  }
   
   const pageHtml = renderPage({
     locale,
