@@ -76,18 +76,18 @@ Add emphasis with colored text using a simple syntax:
 
 **Available Colors:**
 
-| Syntax | Result |
-|--------|--------|
-| `{red}text{/}` | {red}Red text{/} |
-| `{green}text{/}` | {green}Green text{/} |
-| `{blue}text{/}` | {blue}Blue text{/} |
-| `{yellow}text{/}` | {yellow}Yellow text{/} |
-| `{purple}text{/}` | {purple}Purple text{/} |
-| `{cyan}text{/}` | {cyan}Cyan text{/} |
-| `{orange}text{/}` | {orange}Orange text{/} |
-| `{pink}text{/}` | {pink}Pink text{/} |
-| `{gray}text{/}` | {gray}Gray text{/} |
-| `{#hex}text{/}` | Custom hex color |
+```markdown
+{red}text{/}      - Red text
+{green}text{/}    - Green text
+{blue}text{/}     - Blue text
+{yellow}text{/}   - Yellow text
+{purple}text{/}   - Purple text
+{cyan}text{/}     - Cyan text
+{orange}text{/}   - Orange text
+{pink}text{/}     - Pink text
+{gray}text{/}     - Gray text
+{#hex}text{/}     - Custom hex color
+```
 
 ### Callouts
 

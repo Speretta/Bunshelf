@@ -76,18 +76,18 @@ Basit bir söz dizimi ile vurgulama ekleyin:
 
 **Mevcut Renkler:**
 
-| Söz Dizimi | Sonuç |
-|------------|-------|
-| `{red}metin{/}` | {red}Kırmızı metin{/} |
-| `{green}metin{/}` | {green}Yeşil metin{/} |
-| `{blue}metin{/}` | {blue}Mavi metin{/} |
-| `{yellow}metin{/}` | {yellow}Sarı metin{/} |
-| `{purple}metin{/}` | {purple}Mor metin{/} |
-| `{cyan}metin{/}` | {cyan}Camgöbeği metin{/} |
-| `{orange}metin{/}` | {orange}Turuncu metin{/} |
-| `{pink}metin{/}` | {pink}Pembe metin{/} |
-| `{gray}metin{/}` | {gray}Gri metin{/} |
-| `{#hex}metin{/}` | Özel hex rengi |
+```markdown
+{red}metin{/}      - Kırmızı metin
+{green}metin{/}    - Yeşil metin
+{blue}metin{/}     - Mavi metin
+{yellow}metin{/}   - Sarı metin
+{purple}metin{/}   - Mor metin
+{cyan}metin{/}     - Camgöbeği metin
+{orange}metin{/}   - Turuncu metin
+{pink}metin{/}     - Pembe metin
+{gray}metin{/}     - Gri metin
+{#hex}metin{/}     - Özel hex rengi
+```
 
 ### Uyarı Blokları
 
