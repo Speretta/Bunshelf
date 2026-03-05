@@ -33,6 +33,16 @@ function isDocConfigPartial(value) {
     }
     return true;
 }
+function getBaseURL() {
+    if (process.env.BASE_URL !== undefined) {
+        return process.env.BASE_URL;
+    }
+    if (process.env.GITHUB_REPOSITORY) {
+        const [, repoName] = process.env.GITHUB_REPOSITORY.split("/");
+        return `/${repoName}`;
+    }
+    return "";
+}
 export function validateConfig(config) {
     const errors = [];
     if (config.title && (typeof config.title !== "string" || config.title.length > 200)) {
@@ -59,12 +69,13 @@ export function validateConfig(config) {
     if (errors.length > 0) {
         throw createError(ErrorCode.CONFIG_ERROR, { errors });
     }
+    const baseURL = getBaseURL();
     return {
         ...defaultConfig,
         ...config,
         title: config.title?.trim() || defaultConfig.title,
         description: config.description?.trim() || defaultConfig.description,
-        base: config.base || defaultConfig.base,
+        base: baseURL,
     };
 }
 export async function loadConfig(docsDir) {

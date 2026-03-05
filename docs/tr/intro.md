@@ -22,8 +22,8 @@ Bunshelf, sadelik ve performansı ön planda tutan geliştiriciler için tasarla
 | Bağımlılıklar | {green}Minimal{/} | Ağır | Minimal |
 | Framework | Yok | React | Rust |
 | i18n Desteği | {green}Yerleşik{/} | Eklenti | Manuel |
-| JS Bundle | {green}~113KB{/} | ~500KB | ~10MB |
-| Paket Boyutu | ~1.7MB | ~15MB | ~10MB |
+| JS Bundle | {green}~13KB{/} | ~300KB | ~0KB |
+| Paket Boyutu | {green}~3.3MB{/} | ~100MB | ~20MB |
 
 ## Önemli Özellikler
 

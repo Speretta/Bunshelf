@@ -170,7 +170,8 @@ async function handle404(locale = "en") {
     const sidebar = await generateSidebar(DOCS_DIR, locale, state.config.sidebar?.[locale]);
     const i18n = getTranslations(locale);
     const { title, message, home } = getNotFoundTranslations(i18n);
-    const homeUrl = locale === "en" ? "/" : `/${locale}`;
+    const base = state.config.base || "";
+    const homeUrl = locale === "en" ? `${base}/` : `${base}/${locale}`;
     const pageHtml = renderPage({
         locale,
         title: `404 - ${title}`,

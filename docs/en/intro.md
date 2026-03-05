@@ -23,8 +23,8 @@ Bunshelf is a {accent}modern documentation generator{/} designed for developers 
 | Dependencies | {green}Minimal{/} | Heavy | Minimal |
 | Framework | None | React | Rust |
 | i18n Support | {green}Built-in{/} | Plugin | Manual |
-| JS Bundle | {green}~113KB{/} | ~500KB | ~10MB |
-| Package Size | ~1.7MB | ~15MB | ~10MB |
+| JS Bundle | {green}~13KB{/} | ~300KB | ~0KB |
+| Package Size | {green}~3.3MB{/} | ~100MB | ~20MB |
 
 ## Key Features
 
