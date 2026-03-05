@@ -65,7 +65,12 @@ async function handleRequest(request: Request): Promise<Response> {
 }
 
 async function handleAsset(url: string): Promise<Response> {
-  const path = new URL(url).pathname;
+  let path = new URL(url).pathname;
+  
+  if (state?.config.base && path.startsWith(state.config.base)) {
+    path = path.slice(state.config.base.length);
+  }
+  
   const filePath = join(PUBLIC_DIR, path);
 
   if (await exists(filePath)) {

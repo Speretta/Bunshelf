@@ -33,6 +33,19 @@ function isDocConfigPartial(value: unknown): value is Partial<DocConfig> {
   return true;
 }
 
+function getBaseURL(): string {
+  if (process.env.BASE_URL !== undefined) {
+    return process.env.BASE_URL;
+  }
+  
+  if (process.env.GITHUB_REPOSITORY) {
+    const [, repoName] = process.env.GITHUB_REPOSITORY.split("/");
+    return `/${repoName}`;
+  }
+  
+  return "";
+}
+
 export function validateConfig(config: Partial<DocConfig>): DocConfig {
   const errors: string[] = [];
 
@@ -64,12 +77,14 @@ export function validateConfig(config: Partial<DocConfig>): DocConfig {
     throw createError(ErrorCode.CONFIG_ERROR, { errors });
   }
 
+  const baseURL = getBaseURL();
+  
   return {
     ...defaultConfig,
     ...config,
     title: config.title?.trim() || defaultConfig.title,
     description: config.description?.trim() || defaultConfig.description,
-    base: config.base || defaultConfig.base,
+    base: baseURL,
   };
 }
 
