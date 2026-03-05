@@ -10,6 +10,7 @@ interface ScreenshotConfig {
   viewport: { width: number; height: number };
   fullPage?: boolean;
   mobile?: boolean;
+  theme?: 'light' | 'dark';
 }
 
 const screenshots: ScreenshotConfig[] = [
@@ -18,6 +19,14 @@ const screenshots: ScreenshotConfig[] = [
     path: '/intro',
     viewport: { width: 1920, height: 1080 },
     fullPage: true,
+    theme: 'light',
+  },
+  {
+    name: 'bunshelf-desktop-dark',
+    path: '/intro',
+    viewport: { width: 1920, height: 1080 },
+    fullPage: true,
+    theme: 'dark',
   },
   {
     name: 'bunshelf-mobile',
@@ -25,11 +34,21 @@ const screenshots: ScreenshotConfig[] = [
     viewport: { width: 375, height: 812 },
     fullPage: false,
     mobile: true,
+    theme: 'light',
+  },
+  {
+    name: 'bunshelf-mobile-dark',
+    path: '/intro',
+    viewport: { width: 375, height: 812 },
+    fullPage: false,
+    mobile: true,
+    theme: 'dark',
   },
 ];
 
 async function takeScreenshot(browser: Browser, config: ScreenshotConfig): Promise<void> {
-  console.log(`Taking screenshot: ${config.name}`);
+  const themeLabel = config.theme || 'light';
+  console.log(`Taking screenshot: ${config.name} (${themeLabel} mode)`);
   
   const page = await browser.newPage();
   
@@ -50,6 +69,16 @@ async function takeScreenshot(browser: Browser, config: ScreenshotConfig): Promi
       waitUntil: 'networkidle0',
       timeout: 60000,
     });
+    
+    if (config.theme) {
+      console.log(`Setting theme to ${config.theme}...`);
+      await page.evaluate((theme) => {
+        localStorage.setItem('theme', theme);
+        document.documentElement.setAttribute('data-theme', theme);
+      }, config.theme);
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
     
     await new Promise(resolve => setTimeout(resolve, 2000));
     

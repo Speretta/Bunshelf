@@ -6,9 +6,19 @@ A modern, fast, and beautiful documentation generator with built-in themes, sear
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Update Screenshots](https://github.com/Speretta/Bunshelf/actions/workflows/update-screenshots.yml/badge.svg)](https://github.com/Speretta/Bunshelf/actions/workflows/update-screenshots.yml)
 
-![Bunshelf Desktop Preview](./public/assets/images/bunshelf-desktop.png)
+## Preview
 
-<img src="./public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile Preview" width="300">
+### Light Mode
+
+![Bunshelf Desktop - Light](./public/assets/images/bunshelf-desktop.png)
+
+<img src="./public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile - Light" width="300">
+
+### Dark Mode
+
+![Bunshelf Desktop - Dark](./public/assets/images/bunshelf-desktop-dark.png)
+
+<img src="./public/assets/images/bunshelf-mobile-dark.png" alt="Bunshelf Mobile - Dark" width="300">
 
 ## Features
 
