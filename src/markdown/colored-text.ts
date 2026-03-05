@@ -17,9 +17,15 @@ const VALID_COLOR_REGEX = /^#[0-9a-fA-F]{3,6}$/;
 
 export function processColoredText(content: string): string {
   const codeBlockRegex = /```[\s\S]*?```/g;
+  const inlineCodeRegex = /`[^`]+`/g;
   const codeBlocks: string[] = [];
   
-  const contentWithPlaceholders = content.replace(codeBlockRegex, (match) => {
+  let contentWithPlaceholders = content.replace(codeBlockRegex, (match) => {
+    codeBlocks.push(match);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  });
+  
+  contentWithPlaceholders = contentWithPlaceholders.replace(inlineCodeRegex, (match) => {
     codeBlocks.push(match);
     return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
   });

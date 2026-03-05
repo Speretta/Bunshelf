@@ -103,7 +103,7 @@ Bunshelf, temel URL'yi bu sırayla belirler:
 
 1. {accent}`BASE_URL` ortam değişkeni{/} (en yüksek öncelik)
 2. {accent}`GITHUB_REPOSITORY` ortam değişkeni{/} (GitHub Actions için)
-3. {accent}`config.yaml'da base`{/}
+3. {accent}`config.yaml`'da `base`{/}
 4. Boş dize (varsayılan)
 
 ::: note Önemli
