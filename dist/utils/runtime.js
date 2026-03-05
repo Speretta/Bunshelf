@@ -117,7 +117,8 @@ class NodeServer {
                 response.headers.forEach((value, key) => {
                     res.setHeader(key, value);
                 });
-                res.end(await response.text());
+                const buffer = await response.arrayBuffer();
+                res.end(Buffer.from(buffer));
             }
             catch (error) {
                 if (options.error) {
