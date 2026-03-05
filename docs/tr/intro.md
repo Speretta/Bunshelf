@@ -18,11 +18,12 @@ Bunshelf, sadelik ve performansı ön planda tutan geliştiriciler için tasarla
 
 | Özellik | Bunshelf | Docusaurus | mdBook |
 |---------|----------|------------|--------|
-| Build Hızı | {green}Ultra Hızlı{/} | Yavaş | Hızlı |
+| Derleme Hızı | {green}Ultra Hızlı{/} | Yavaş | Hızlı |
 | Bağımlılıklar | {green}Minimal{/} | Ağır | Minimal |
 | Framework | Yok | React | Rust |
 | i18n Desteği | {green}Yerleşik{/} | Eklenti | Manuel |
-| Bundle Boyutu | {green}~50KB{/} | ~500KB | ~10MB |
+| JS Bundle | {green}~113KB{/} | ~500KB | ~10MB |
+| Paket Boyutu | ~1.7MB | ~15MB | ~10MB |
 
 ## Önemli Özellikler
 
@@ -32,7 +33,7 @@ Bun.js ile oluşturulmuş, olağanüstü performans:
 
 - **Hot Reload**: Değişiklikler geliştirme sırasında anında görünür
 - **Hızlı Build**: Statik siteler milisaniyeler içinde oluşturulur
-- **Minimal Bundle**: Sadece ~50KB JavaScript
+- **Minimal Bundle**: Sadece ~113KB JavaScript
 
 ### {yellow}Modüler Mimari{/}
 
