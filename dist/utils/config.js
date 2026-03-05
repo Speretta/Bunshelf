@@ -8,6 +8,7 @@ const defaultConfig = {
     description: "A fast documentation website generator",
     defaultLocale: "en",
     locales: ["en"],
+    base: "",
 };
 function isValidLocale(locale) {
     return typeof locale === "string" && /^[a-z]{2}(-[a-z]{2})?$/.test(locale);
@@ -21,6 +22,8 @@ function isDocConfigPartial(value) {
     if ("description" in obj && typeof obj.description !== "string")
         return false;
     if ("defaultLocale" in obj && !isValidLocale(obj.defaultLocale))
+        return false;
+    if ("base" in obj && typeof obj.base !== "string")
         return false;
     if ("locales" in obj) {
         if (!Array.isArray(obj.locales))
@@ -61,6 +64,7 @@ export function validateConfig(config) {
         ...config,
         title: config.title?.trim() || defaultConfig.title,
         description: config.description?.trim() || defaultConfig.description,
+        base: config.base || defaultConfig.base,
     };
 }
 export async function loadConfig(docsDir) {

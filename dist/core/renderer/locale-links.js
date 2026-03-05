@@ -1,8 +1,8 @@
-export function renderLocaleLinks(locales, currentLocale, currentSlug) {
+export function renderLocaleLinks(locales, currentLocale, currentSlug, base = "") {
     const buttons = locales
         .map((locale) => {
         const isActive = locale === currentLocale;
-        const href = locale === "en" ? `/${currentSlug}` : `/${locale}/${currentSlug}`;
+        const href = locale === "en" ? `${base}/${currentSlug}` : `${base}/${locale}/${currentSlug}`;
         return `<a href="${href}" class="locale-segment${isActive ? " active" : ""}" data-locale="${locale}">${locale.toUpperCase()}</a>`;
     })
         .join("");

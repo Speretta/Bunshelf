@@ -23,6 +23,12 @@ async function build() {
         const config = await loadConfig(DOCS_DIR);
         await loadTranslations(getI18nDir());
         const searchIndex = await buildSearchIndex(DOCS_DIR, config.locales);
+        const base = config.base || "";
+        if (base) {
+            for (const item of searchIndex) {
+                item.href = base + item.href;
+            }
+        }
         const ctx = { config, searchIndex };
         await mkdir(DIST_DIR, { recursive: true });
         await cp(join(PUBLIC_DIR, "assets"), join(DIST_DIR, "assets"), { recursive: true });
@@ -34,7 +40,7 @@ async function build() {
         const searchIndexPath = join(DIST_DIR, "search-index.json");
         await runtimeWrite(searchIndexPath, JSON.stringify(searchIndex));
         await write404Pages(ctx);
-        await writeIndexRedirect(ctx.config.defaultLocale);
+        await writeIndexRedirect(ctx.config.defaultLocale, ctx.config.base);
         console.log("✅ Build complete!");
         console.log(`📁 Output: ${DIST_DIR}`);
         logger.info("Build completed", {
@@ -96,13 +102,14 @@ async function buildPage(ctx, locale, filePath, sidebar) {
     }
 }
 async function write404Pages(ctx) {
+    const base = ctx.config.base || "";
     for (const locale of ctx.config.locales) {
         const i18n = getTranslations(locale);
         const { title, message, home } = getNotFoundTranslations(i18n);
-        const homeUrl = locale === "en" ? "/" : `/${locale}`;
+        const homeUrl = locale === "en" ? base + "/" : base + `/${locale}`;
         const html = `<!DOCTYPE html>
 <html lang="${locale}">
-${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description: message })}
+${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description: message, base })}
 <body>
   <div class="error-page" style="text-align: center; padding: 4rem 2rem; min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <h1 style="font-size: 6rem; margin: 0; color: var(--text-muted);">404</h1>
@@ -129,8 +136,8 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
         await runtimeWrite(join(DIST_DIR, locale, "404.html"), html);
     }
 }
-async function writeIndexRedirect(defaultLocale) {
-    const redirectUrl = defaultLocale === "en" ? "/intro" : `/${defaultLocale}/intro`;
+async function writeIndexRedirect(defaultLocale, base = "") {
+    const redirectUrl = defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`;
     const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
     await runtimeWrite(join(DIST_DIR, "index.html"), html);
 }
