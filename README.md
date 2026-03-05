@@ -10,15 +10,15 @@ A modern, fast, and beautiful documentation generator with built-in themes, sear
 
 ### Light Mode
 
-![Bunshelf Desktop - Light](./public/assets/images/bunshelf-desktop.png)
+<img src="./public/assets/images/bunshelf-desktop.png" alt="Bunshelf Desktop - Light" width="450">
 
-<img src="./public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile - Light" width="300">
+<img src="./public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile - Light" width="150">
 
 ### Dark Mode
 
-![Bunshelf Desktop - Dark](./public/assets/images/bunshelf-desktop-dark.png)
+<img src="./public/assets/images/bunshelf-desktop-dark.png" alt="Bunshelf Desktop - Dark" width="450">
 
-<img src="./public/assets/images/bunshelf-mobile-dark.png" alt="Bunshelf Mobile - Dark" width="300">
+<img src="./public/assets/images/bunshelf-mobile-dark.png" alt="Bunshelf Mobile - Dark" width="150">
 
 ## Features
 
