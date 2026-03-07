@@ -3,8 +3,7 @@ import { icons, themeIcons } from "./icons.js";
 import type { TranslationStrings } from "../../i18n/index.js";
 import { getSearchTranslations, getThemeTranslations } from "../../i18n/accessors.js";
 import { renderThemeOptions } from "./theme-toggle.js";
-
-const DEFAULT_LOGO = "/assets/images/logo.webp";
+import { DEFAULT_LOGO } from "../../core/constants/defaults.js";
 
 export function renderNavbar(options: {
   title: string;

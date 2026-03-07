@@ -14,6 +14,7 @@ import { handleError } from "./utils/errors.js";
 import { serve, file as runtimeFile, type ServerOptions } from "./utils/runtime.js";
 import { getMimeType } from "./utils/mime.js";
 import { getPublicDir, getI18nDir } from "./utils/paths.js";
+import { getHomeUrl } from "./utils/navigation.js";
 
 const DOCS_DIR = getDocsDir();
 const PUBLIC_DIR = getPublicDir();
@@ -24,7 +25,7 @@ interface ServerState {
   fuse: ReturnType<typeof createFuseInstance>;
 }
 
-let state: ServerState;
+let state: ServerState | undefined;
 
 async function initServer(): Promise<ServerState> {
   try {
@@ -147,22 +148,9 @@ async function handlePage(url: string): Promise<Response> {
   let docPath = await resolveDocPath(safeLocale, safeSlug || "index");
 
   if (!docPath && slug === "index") {
-    let redirectTarget: string;
-    
-    if (state.config.homePage) {
-      redirectTarget = safeLocale === "en" 
-        ? state.config.homePage 
-        : `/${safeLocale}${state.config.homePage}`;
-    } else {
-      const sidebar = state.config.sidebar?.[safeLocale];
-      const firstPage = sidebar?.[0]?.items?.[0]?.href;
-      
-      if (firstPage) {
-        redirectTarget = firstPage;
-      } else {
-        redirectTarget = safeLocale === "en" ? "/intro" : `/${safeLocale}/intro`;
-      }
-    }
+    const base = state.config.base || "";
+    const sidebar = state.config.sidebar?.[safeLocale];
+    const redirectTarget = getHomeUrl(safeLocale, base, state.config.homePage, sidebar);
     
     return Response.redirect(new URL(redirectTarget, url), 302);
   }
@@ -231,16 +219,7 @@ async function handle404(locale: string = "en"): Promise<Response> {
   const i18n = getTranslations(locale);
   const { title, message, home } = getNotFoundTranslations(i18n);
   const base = state.config.base || "";
-  
-  let homeUrl: string;
-  if (state.config.homePage) {
-    homeUrl = locale === "en" 
-      ? `${base}${state.config.homePage}` 
-      : `${base}/${locale}${state.config.homePage}`;
-  } else {
-    const firstPage = sidebar?.[0]?.items?.[0]?.href;
-    homeUrl = firstPage ? `${base}${firstPage}` : (locale === "en" ? `${base}/` : `${base}/${locale}`);
-  }
+  const homeUrl = getHomeUrl(locale, base, state.config.homePage, sidebar);
   
   const pageHtml = renderPage({
     locale,
@@ -270,7 +249,8 @@ async function main(): Promise<void> {
   try {
     state = await initServer();
 
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+    const portEnv = parseInt(process.env.PORT || "");
+    const port = Number.isFinite(portEnv) ? portEnv : 3000;
 
     const serverOptions: ServerOptions = {
       port,
@@ -299,6 +279,6 @@ main().catch((error) => {
   process.exit(1);
 });
 
-export async function startDevServer() {
+export async function startDevServer(): Promise<void> {
   await main();
 }

@@ -1,7 +1,18 @@
 import type { RouteParams, DocConfig } from "./utils/types.js";
 
+function safeParseUrl(url: string): URL | null {
+  try {
+    return new URL(url, "http://localhost");
+  } catch {
+    return null;
+  }
+}
+
 export function parseRoute(url: string, config: DocConfig): RouteParams | null {
-  const path = new URL(url, "http://localhost").pathname;
+  const parsedUrl = safeParseUrl(url);
+  if (!parsedUrl) return null;
+  
+  const path = parsedUrl.pathname;
   const segments = path.split("/").filter(Boolean);
   
   if (segments.length === 0) {
@@ -46,7 +57,10 @@ export function parseRoute(url: string, config: DocConfig): RouteParams | null {
 }
 
 export function isAssetRequest(url: string): boolean {
-  const path = new URL(url, "http://localhost").pathname;
+  const parsedUrl = safeParseUrl(url);
+  if (!parsedUrl) return false;
+  
+  const path = parsedUrl.pathname;
   return (
     path.startsWith("/assets/") ||
     path.startsWith("/fonts/") ||
@@ -60,6 +74,9 @@ export function isAssetRequest(url: string): boolean {
 }
 
 export function isSearchRequest(url: string): boolean {
-  const path = new URL(url, "http://localhost").pathname;
+  const parsedUrl = safeParseUrl(url);
+  if (!parsedUrl) return false;
+  
+  const path = parsedUrl.pathname;
   return path === "/api/search" || path.startsWith("/api/search?");
 }

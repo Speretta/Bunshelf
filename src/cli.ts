@@ -29,7 +29,7 @@ Examples:
 For more information, visit: https://github.com/speretta/bunshelf
 `;
 
-async function main() {
+async function main(): Promise<void> {
   const { positionals, values } = parseArgs({
     options: {
       help: {

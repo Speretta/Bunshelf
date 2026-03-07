@@ -53,8 +53,12 @@ export function renderPage(options: PageRenderOptions): string {
 
   const currentHref = locale === "en" ? `/${currentSlug}` : `/${locale}/${currentSlug}`;
   const flatPages = flattenSidebar(sidebar);
+  
+  const normalizeHref = (href: string): string => href.replace(/\/+$/, "");
+  
   const currentIndex = flatPages.findIndex(
-    (p) => p.href === currentHref || p.href === `/${currentSlug}`
+    (p) => normalizeHref(p.href) === normalizeHref(currentHref) || 
+          normalizeHref(p.href) === normalizeHref(`/${currentSlug}`)
   );
   const prev = prevPage ?? (currentIndex > 0 ? (flatPages[currentIndex - 1] ?? null) : null);
   const next = nextPage ?? (currentIndex < flatPages.length - 1 ? (flatPages[currentIndex + 1] ?? null) : null);

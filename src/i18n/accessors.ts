@@ -42,69 +42,80 @@ interface CodeTranslations {
   copied: string;
 }
 
+function getNestedString(i18n: TranslationStrings, key: string, fallback: string): string {
+  const value = i18n[key];
+  return typeof value === "string" ? value : fallback;
+}
+
+function getNestedObject(i18n: TranslationStrings, key: string): TranslationStrings | undefined {
+  const value = i18n[key];
+  return typeof value === "object" && value !== null ? value : undefined;
+}
+
 export function getSearchTranslations(i18n: TranslationStrings): SearchTranslations {
-  const search = i18n.search as TranslationStrings | undefined;
+  const search = getNestedObject(i18n, "search");
   return {
-    placeholder: search?.placeholder as string || "Search...",
-    noResults: search?.noResults as string || "No results found",
-    results: search?.results as string || "Results",
+    placeholder: search ? getNestedString(search, "placeholder", "Search...") : "Search...",
+    noResults: search ? getNestedString(search, "noResults", "No results found") : "No results found",
+    results: search ? getNestedString(search, "results", "Results") : "Results",
   };
 }
 
 export function getThemeTranslations(i18n: TranslationStrings): ThemeTranslations {
-  const theme = i18n.theme as Record<string, string> | undefined;
+  const theme = getNestedObject(i18n, "theme");
+  const themeRecord = theme as Record<string, string> | undefined;
   return {
-    light: theme?.light || "Light",
-    dark: theme?.dark || "Dark",
-    hacker: theme?.hacker || "Hacker",
-    ...(theme || {}),
+    light: themeRecord?.light || "Light",
+    dark: themeRecord?.dark || "Dark",
+    hacker: themeRecord?.hacker || "Hacker",
+    ...(themeRecord || {}),
   };
 }
 
 export function getPageNavTranslations(i18n: TranslationStrings): PageNavTranslations {
-  const pageNav = i18n.pageNav as TranslationStrings | undefined;
+  const pageNav = getNestedObject(i18n, "pageNav");
   return {
-    previous: pageNav?.previous as string || "Previous",
-    next: pageNav?.next as string || "Next",
+    previous: pageNav ? getNestedString(pageNav, "previous", "Previous") : "Previous",
+    next: pageNav ? getNestedString(pageNav, "next", "Next") : "Next",
   };
 }
 
 export function getFooterTranslations(i18n: TranslationStrings): FooterTranslations {
-  const footer = i18n.footer as TranslationStrings | undefined;
+  const footer = getNestedObject(i18n, "footer");
   return {
-    poweredBy: footer?.poweredBy as string || "Powered by",
+    poweredBy: footer ? getNestedString(footer, "poweredBy", "Powered by") : "Powered by",
   };
 }
 
 export function getNotFoundTranslations(i18n: TranslationStrings): NotFoundTranslations {
-  const notFound = i18n["404"] as TranslationStrings | undefined;
+  const notFound = getNestedObject(i18n, "404");
   return {
-    title: notFound?.title as string || "Page Not Found",
-    message: notFound?.message as string || "The page you're looking for doesn't exist.",
-    home: notFound?.home as string || "Go Home",
+    title: notFound ? getNestedString(notFound, "title", "Page Not Found") : "Page Not Found",
+    message: notFound ? getNestedString(notFound, "message", "The page you're looking for doesn't exist.") : "The page you're looking for doesn't exist.",
+    home: notFound ? getNestedString(notFound, "home", "Go Home") : "Go Home",
   };
 }
 
 export function getCalloutsTranslations(i18n: TranslationStrings): CalloutsTranslations {
-  const callouts = i18n.callouts as TranslationStrings | undefined;
+  const callouts = getNestedObject(i18n, "callouts");
   return {
-    note: (callouts?.note as string) || "Note",
-    tip: (callouts?.tip as string) || "Pro Tip",
-    info: (callouts?.info as string) || "Info",
-    warning: (callouts?.warning as string) || "Warning",
-    error: (callouts?.error as string) || "Error",
-    danger: (callouts?.danger as string) || "Danger",
+    note: callouts ? getNestedString(callouts, "note", "Note") : "Note",
+    tip: callouts ? getNestedString(callouts, "tip", "Pro Tip") : "Pro Tip",
+    info: callouts ? getNestedString(callouts, "info", "Info") : "Info",
+    warning: callouts ? getNestedString(callouts, "warning", "Warning") : "Warning",
+    error: callouts ? getNestedString(callouts, "error", "Error") : "Error",
+    danger: callouts ? getNestedString(callouts, "danger", "Danger") : "Danger",
   };
 }
 
 export function getCodeTranslations(i18n: TranslationStrings): CodeTranslations {
-  const code = i18n.code as TranslationStrings | undefined;
+  const code = getNestedObject(i18n, "code");
   return {
-    copy: (code?.copy as string) || "Copy code",
-    copied: (code?.copied as string) || "Copied!",
+    copy: code ? getNestedString(code, "copy", "Copy code") : "Copy code",
+    copied: code ? getNestedString(code, "copied", "Copied!") : "Copied!",
   };
 }
 
 export function getMenuLabel(i18n: TranslationStrings): string {
-  return (i18n.menu as string) || "Menu";
+  return getNestedString(i18n, "menu", "Menu");
 }

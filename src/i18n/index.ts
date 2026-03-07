@@ -29,6 +29,7 @@ export async function loadTranslations(i18nDir: string): Promise<void> {
       }
     } catch (error) {
       logger.error("Failed to load translation file", { file: fileName, error });
+      throw new Error(`Failed to load translation file: ${fileName}`);
     }
   }
 }

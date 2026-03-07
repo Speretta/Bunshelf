@@ -5,6 +5,84 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-03-07
+
+### Added
+- New `utils/navigation.ts` module with shared navigation utilities:
+  - `getHomeUrl()` - centralized home URL calculation
+  - `getIndexRedirectUrl()` - index redirect URL generation
+  - `getThemeInitScript()` - shared theme initialization script
+
+### Changed
+- **Refactored**: Extracted duplicated home URL calculation logic to `getHomeUrl()` utility
+- **Refactored**: Extracted duplicated theme init script to `getThemeInitScript()` utility
+- **Refactored**: Moved `DEFAULT_LOGO` constant to `core/constants/defaults.ts`
+- **Refactored**: Removed duplicate `ParsedDocument` interface from `utils/types.ts`
+- **Improved**: `DocConfig` interface now uses `readonly` modifiers for immutability
+- **Improved**: `i18n/accessors.ts` now uses helper functions instead of type assertions
+- **Improved**: Added explicit return types to all exported async functions
+
+### Fixed
+- Fixed potential crash when request arrives before server initialization (`state` undefined)
+- Fixed PORT environment variable validation (now handles NaN from `parseInt`)
+- Fixed URL parsing error handling in `router.ts` (malformed URLs no longer throw)
+- Fixed translation file loading errors now properly throw instead of silently failing
+- Fixed `exists()` function in `runtime.ts` now logs unexpected errors
+- Fixed prev/next navigation failing when sidebar href ends with trailing slash
+
+## [1.3.9] - 2026-03-06
+
+### Fixed
+- Fixed binary file handling using `arrayBuffer()` instead of `text()` for proper encoding
+
+## [1.3.8] - 2026-03-05
+
+### Fixed
+- Fixed default logo base URL to work correctly with GitHub Pages deployments
+
+## [1.3.7] - 2026-03-05
+
+### Fixed
+- Fixed color syntax rendering in lists and inline code blocks
+
+## [1.3.6] - 2026-03-05
+
+### Added
+- Documentation for `homePage` and `base` URL configuration options
+
+## [1.3.5] - 2026-03-05
+
+### Added
+- Configurable `homePage` option with smart fallback to first doc page
+- `homePage` prop in config for customizing the home link destination
+
+## [1.3.4] - 2026-03-05
+
+### Fixed
+- Fixed 404 page home URL to correctly include base URL prefix
+
+## [1.3.3] - 2026-03-05
+
+### Added
+- Automatic base URL detection from environment for easier deployment
+
+## [1.3.2] - 2026-03-05
+
+### Fixed
+- Fixed npm bin configuration for proper CLI installation
+
+## [1.3.0] - 2026-03-05
+
+### Added
+- `base` URL configuration option for GitHub Pages deployment support
+- GitHub Pages deployment workflow (`.github/workflows/deploy.yml`)
+- Base URL support in renderer, sidebar, SSG builder, and head templates
+- Documentation for GitHub Pages deployment
+
+### Changed
+- Updated locale links, page renderer, and sidebar to respect base URL
+- SSG builder now generates correct paths with base URL prefix
+
 ## [1.2.5] - 2025-03-05
 
 ### Fixed
