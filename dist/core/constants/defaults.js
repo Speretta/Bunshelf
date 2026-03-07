@@ -6,4 +6,5 @@ export const DEFAULT_CONFIG = {
     locales: ["en"],
 };
 export const DEFAULT_ORDER = 999;
+export const DEFAULT_LOGO = "/assets/images/logo.webp";
 //# sourceMappingURL=defaults.js.map

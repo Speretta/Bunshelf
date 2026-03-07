@@ -1,5 +1,6 @@
 import { CDN } from "../core/constants/cdn.js";
-const DEFAULT_LOGO = "/assets/images/logo.webp";
+import { DEFAULT_LOGO } from "../core/constants/defaults.js";
+import { getThemeInitScript } from "../utils/navigation.js";
 export function renderHead(options) {
     const { title, siteTitle, description, logo = DEFAULT_LOGO, base = "" } = options;
     const prefixedLogo = base + logo;
@@ -32,18 +33,7 @@ export function renderHead(options) {
   <link rel="stylesheet" href="${prefixedPageNav}">
   <script src="${CDN.fuseJs}"></script>
   <script src="${CDN.highlightJs}"></script>
-  <script>
-    (function() {
-      var theme = localStorage.getItem('theme');
-      if (theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
+  ${getThemeInitScript()}
   <script src="${prefixedMainJs}" defer></script>
 </head>`;
 }

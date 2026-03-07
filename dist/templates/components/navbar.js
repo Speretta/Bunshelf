@@ -1,7 +1,7 @@
 import { icons, themeIcons } from "./icons.js";
 import { getSearchTranslations, getThemeTranslations } from "../../i18n/accessors.js";
 import { renderThemeOptions } from "./theme-toggle.js";
-const DEFAULT_LOGO = "/assets/images/logo.webp";
+import { DEFAULT_LOGO } from "../../core/constants/defaults.js";
 export function renderNavbar(options) {
     const { title, homeUrl, i18n, logo = DEFAULT_LOGO } = options;
     const { placeholder: searchPlaceholder } = getSearchTranslations(i18n);

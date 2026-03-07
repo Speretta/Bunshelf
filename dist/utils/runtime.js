@@ -1,6 +1,7 @@
 import { readFile, writeFile, readdir, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { join } from "node:path";
+import { logger } from "./logger.js";
 export const isBun = typeof globalThis.Bun !== "undefined";
 class NodeFile {
     path;
@@ -177,7 +178,11 @@ export async function exists(path) {
         await stat(path);
         return true;
     }
-    catch {
+    catch (error) {
+        if (error.code === "ENOENT") {
+            return false;
+        }
+        logger.warn("Failed to check file existence", { path, error });
         return false;
     }
 }

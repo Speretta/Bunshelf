@@ -13,7 +13,9 @@ export function renderPage(options) {
     const homeUrl = locale === "en" ? base + "/" : base + `/${locale}`;
     const currentHref = locale === "en" ? `/${currentSlug}` : `/${locale}/${currentSlug}`;
     const flatPages = flattenSidebar(sidebar);
-    const currentIndex = flatPages.findIndex((p) => p.href === currentHref || p.href === `/${currentSlug}`);
+    const normalizeHref = (href) => href.replace(/\/+$/, "");
+    const currentIndex = flatPages.findIndex((p) => normalizeHref(p.href) === normalizeHref(currentHref) ||
+        normalizeHref(p.href) === normalizeHref(`/${currentSlug}`));
     const prev = prevPage ?? (currentIndex > 0 ? (flatPages[currentIndex - 1] ?? null) : null);
     const next = nextPage ?? (currentIndex < flatPages.length - 1 ? (flatPages[currentIndex + 1] ?? null) : null);
     const prevWithBase = prev ? { ...prev, href: base + prev.href } : null;

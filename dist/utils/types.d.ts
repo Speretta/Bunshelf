@@ -1,15 +1,15 @@
 export interface DocConfig {
-    title: string;
-    description: string;
-    defaultLocale: string;
+    readonly title: string;
+    readonly description: string;
+    readonly defaultLocale: string;
     locales: string[];
-    base?: string;
-    sidebar?: SidebarConfig;
-    theme?: {
-        default: string;
+    readonly base?: string;
+    readonly sidebar?: SidebarConfig;
+    readonly theme?: {
+        readonly default: string;
     };
-    logo?: string;
-    homePage?: string;
+    readonly logo?: string;
+    readonly homePage?: string;
 }
 export interface SidebarConfig {
     [locale: string]: SidebarItem[];
@@ -27,11 +27,6 @@ export interface PageMeta {
     order?: number;
     sidebar_label?: string;
     hide?: boolean;
-}
-export interface ParsedDocument {
-    meta: PageMeta;
-    content: string;
-    html: string;
 }
 export interface RouteParams {
     locale: string;

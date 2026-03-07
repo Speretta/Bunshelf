@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-03-07
+
+### Fixed
+- Fixed sidebar active link not highlighting when href ends with trailing slash
+
 ## [1.4.0] - 2026-03-07
 
 ### Added
@@ -29,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed translation file loading errors now properly throw instead of silently failing
 - Fixed `exists()` function in `runtime.ts` now logs unexpected errors
 - Fixed prev/next navigation failing when sidebar href ends with trailing slash
+- Fixed sidebar active link not highlighting when href ends with trailing slash
 
 ## [1.3.9] - 2026-03-06
 

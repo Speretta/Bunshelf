@@ -13,6 +13,7 @@ import { isValidPath } from "../utils/sanitize.js";
 import { write as runtimeWrite } from "../utils/runtime.js";
 import { renderHead } from "../templates/head.js";
 import { getDocsDir, getDistDir, getPublicDir, getI18nDir } from "../utils/paths.js";
+import { getHomeUrl, getIndexRedirectUrl, getThemeInitScript } from "../utils/navigation.js";
 const DOCS_DIR = getDocsDir();
 const DIST_DIR = getDistDir();
 const PUBLIC_DIR = getPublicDir();
@@ -107,16 +108,7 @@ async function write404Pages(ctx) {
         const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale]);
         const i18n = getTranslations(locale);
         const { title, message, home } = getNotFoundTranslations(i18n);
-        let homeUrl;
-        if (ctx.config.homePage) {
-            homeUrl = locale === "en"
-                ? `${base}${ctx.config.homePage}`
-                : `${base}/${locale}${ctx.config.homePage}`;
-        }
-        else {
-            const firstPage = sidebar?.[0]?.items?.[0]?.href;
-            homeUrl = firstPage ? `${base}${firstPage}` : (locale === "en" ? `${base}/` : `${base}/${locale}`);
-        }
+        const homeUrl = getHomeUrl(locale, base, ctx.config.homePage, sidebar);
         const html = `<!DOCTYPE html>
 <html lang="${locale}">
 ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description: message, base })}
@@ -126,18 +118,7 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
     <p style="font-size: 1.25rem; color: var(--text-secondary); margin: 1rem 0;">${message}</p>
     <a href="${homeUrl}" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent-primary); color: white; text-decoration: none; border-radius: 6px;">${home}</a>
   </div>
-  <script>
-    (function() {
-      var theme = localStorage.getItem('theme');
-      if (theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
+  ${getThemeInitScript()}
 </body>
 </html>`;
         if (locale === "en") {
@@ -147,14 +128,7 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
     }
 }
 async function writeIndexRedirect(defaultLocale, base = "", homePage, sidebar) {
-    let redirectUrl;
-    if (homePage) {
-        redirectUrl = defaultLocale === "en" ? `${base}${homePage}` : `${base}/${defaultLocale}${homePage}`;
-    }
-    else {
-        const firstPage = sidebar?.[0]?.items?.[0]?.href;
-        redirectUrl = firstPage ? `${base}${firstPage}` : (defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`);
-    }
+    const redirectUrl = getIndexRedirectUrl(defaultLocale, base, homePage, sidebar);
     const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
     await runtimeWrite(join(DIST_DIR, "index.html"), html);
 }

@@ -1,5 +1,16 @@
+function safeParseUrl(url) {
+    try {
+        return new URL(url, "http://localhost");
+    }
+    catch {
+        return null;
+    }
+}
 export function parseRoute(url, config) {
-    const path = new URL(url, "http://localhost").pathname;
+    const parsedUrl = safeParseUrl(url);
+    if (!parsedUrl)
+        return null;
+    const path = parsedUrl.pathname;
     const segments = path.split("/").filter(Boolean);
     if (segments.length === 0) {
         return {
@@ -36,7 +47,10 @@ export function parseRoute(url, config) {
     };
 }
 export function isAssetRequest(url) {
-    const path = new URL(url, "http://localhost").pathname;
+    const parsedUrl = safeParseUrl(url);
+    if (!parsedUrl)
+        return false;
+    const path = parsedUrl.pathname;
     return (path.startsWith("/assets/") ||
         path.startsWith("/fonts/") ||
         path.endsWith(".css") ||
@@ -47,7 +61,10 @@ export function isAssetRequest(url) {
         path.endsWith(".ico"));
 }
 export function isSearchRequest(url) {
-    const path = new URL(url, "http://localhost").pathname;
+    const parsedUrl = safeParseUrl(url);
+    if (!parsedUrl)
+        return false;
+    const path = parsedUrl.pathname;
     return path === "/api/search" || path.startsWith("/api/search?");
 }
 //# sourceMappingURL=router.js.map
