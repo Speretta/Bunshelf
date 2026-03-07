@@ -76,9 +76,17 @@ async function buildPage(ctx, locale, filePath, sidebar) {
         const content = await readTextFile(filePath);
         const { meta, html } = parseDocument(content);
         const slug = getSlugFromPath(join(DOCS_DIR, locale), filePath);
-        const outputPath = slug === "index" || slug.endsWith("/index")
-            ? join(DIST_DIR, locale === "en" ? "" : locale, "index.html")
-            : join(DIST_DIR, locale === "en" ? "" : locale, slug, "index.html");
+        let outputPath;
+        if (slug === "index") {
+            outputPath = join(DIST_DIR, locale === "en" ? "" : locale, "index.html");
+        }
+        else if (slug.endsWith("/index")) {
+            const dirSlug = slug.replace(/\/index$/, "");
+            outputPath = join(DIST_DIR, locale === "en" ? "" : locale, dirSlug, "index.html");
+        }
+        else {
+            outputPath = join(DIST_DIR, locale === "en" ? "" : locale, slug, "index.html");
+        }
         if (!isValidPath(DIST_DIR, outputPath)) {
             logger.error("Invalid output path", { outputPath });
             return;
