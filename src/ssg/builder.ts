@@ -89,6 +89,14 @@ async function build(): Promise<void> {
 
 async function downloadDefaultLogo(distDir: string): Promise<boolean> {
   const logoDir = join(distDir, "assets", "images");
+  const logoPath = join(logoDir, "logo.webp");
+  
+  if (await exists(logoPath)) {
+    console.log("  ✓ Using cached default logo");
+    logger.debug("Logo already exists, skipping download", { path: logoPath });
+    return true;
+  }
+  
   await mkdir(logoDir, { recursive: true });
   
   console.log("  📥 Downloading default logo from GitHub...");
@@ -101,7 +109,6 @@ async function downloadDefaultLogo(distDir: string): Promise<boolean> {
     }
     
     const buffer = await response.arrayBuffer();
-    const logoPath = join(logoDir, "logo.webp");
     await runtimeWrite(logoPath, Buffer.from(buffer));
     
     console.log("  ✓ Default logo downloaded");
