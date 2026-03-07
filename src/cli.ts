@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 import { parseArgs } from "node:util";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { rm, readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { exists } from "./utils/fs.js";
 import { logger } from "./utils/logger.js";
 import { handleError } from "./utils/errors.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const HELP_TEXT = `
 bunshelf - A modern, fast, and beautiful documentation generator
@@ -16,6 +20,7 @@ Commands:
   dev       Start development server with hot reload
   build     Build static site for production
   preview   Preview production build locally
+  clean     Remove build output directory
 
 Options:
   --help, -h      Show this help message
@@ -25,6 +30,7 @@ Examples:
   bunshelf dev
   bunshelf build
   bunshelf preview
+  bunshelf clean
 
 For more information, visit: https://github.com/speretta/bunshelf
 `;
@@ -45,8 +51,9 @@ async function main(): Promise<void> {
   });
 
   if (values.version) {
-    const pkg = await import("../package.json", { assert: { type: "json" } });
-    console.log(`bunshelf v${pkg.default.version}`);
+    const pkgPath = join(__dirname, "../package.json");
+    const pkg = JSON.parse(await readFile(pkgPath, "utf-8"));
+    console.log(`bunshelf v${pkg.version}`);
     process.exit(0);
   }
 
@@ -92,9 +99,21 @@ async function main(): Promise<void> {
         await import("./ssg/preview.js");
         break;
       }
+      case "clean": {
+        const outputDir = join(process.cwd(), "out");
+        if (await exists(outputDir)) {
+          await rm(outputDir, { recursive: true });
+          console.log("🧹 Cleaned output directory");
+          logger.info("Cleaned output directory", { path: outputDir });
+        } else {
+          console.log("Output directory is already clean");
+          logger.debug("Output directory not found", { path: outputDir });
+        }
+        break;
+      }
       default:
         console.error(`Unknown command: ${command}`);
-        console.error("\nAvailable commands: dev, build, preview");
+        console.error("\nAvailable commands: dev, build, preview, clean");
         console.error("Run 'bunshelf --help' for more information.");
         logger.warn("Unknown command", { command });
         process.exit(1);

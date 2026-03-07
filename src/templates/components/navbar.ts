@@ -3,13 +3,14 @@ import { icons, themeIcons } from "./icons.js";
 import type { TranslationStrings } from "../../i18n/index.js";
 import { getSearchTranslations, getThemeTranslations } from "../../i18n/accessors.js";
 import { renderThemeOptions } from "./theme-toggle.js";
-import { DEFAULT_LOGO } from "../../core/constants/defaults.js";
+
+const DEFAULT_LOGO = "/assets/images/logo.webp";
 
 export function renderNavbar(options: {
   title: string;
   homeUrl: string;
   i18n: TranslationStrings;
-  logo?: string;
+  logo?: string | false;
 }): string {
   const { title, homeUrl, i18n, logo = DEFAULT_LOGO } = options;
   const { placeholder: searchPlaceholder } = getSearchTranslations(i18n);
@@ -40,7 +41,7 @@ export function renderNavbarWithThemes(options: {
   themes: Theme[];
   currentTheme?: string;
   i18n: TranslationStrings;
-  logo?: string;
+  logo?: string | false;
 }): string {
   const { title, homeUrl, themes, currentTheme = "light", i18n, logo = DEFAULT_LOGO } = options;
   

@@ -15,6 +15,10 @@ export function getDistDir(): string {
   return join(process.cwd(), "dist");
 }
 
+export function getOutputDir(): string {
+  return join(process.cwd(), "out");
+}
+
 export function getPublicDir(): string {
   return join(getProjectRoot(), "public");
 }

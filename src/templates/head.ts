@@ -1,12 +1,13 @@
 import { CDN } from "../core/constants/cdn.js";
-import { DEFAULT_LOGO } from "../core/constants/defaults.js";
 import { getThemeInitScript } from "../utils/navigation.js";
+
+const DEFAULT_LOGO = "/assets/images/logo.webp";
 
 export function renderHead(options: {
   title: string;
   siteTitle: string;
   description: string;
-  logo?: string;
+  logo?: string | false;
   base?: string;
 }): string {
   const { title, siteTitle, description, logo = DEFAULT_LOGO, base = "" } = options;

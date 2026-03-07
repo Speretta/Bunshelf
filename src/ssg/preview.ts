@@ -2,8 +2,9 @@ import { join } from "node:path";
 import { exists } from "../utils/fs.js";
 import { serve, file as runtimeFile, type ServerOptions } from "../utils/runtime.js";
 import { getMimeType } from "../utils/mime.js";
+import { getOutputDir } from "../utils/paths.js";
 
-const DIST_DIR = join(process.cwd(), "dist");
+const OUTPUT_DIR = getOutputDir();
 
 async function main(): Promise<void> {
   console.log("Preview server starting...");
@@ -25,12 +26,12 @@ async function main(): Promise<void> {
         return Response.redirect(new URL("/intro", request.url), 302);
       }
       
-      let filePath = join(DIST_DIR, path);
+      let filePath = join(OUTPUT_DIR, path);
       
       if (await exists(filePath) && !path.includes(".")) {
         filePath = join(filePath, "index.html");
       } else if (!await exists(filePath) && !path.includes(".")) {
-        filePath = join(DIST_DIR, path, "index.html");
+        filePath = join(OUTPUT_DIR, path, "index.html");
       }
       
       if (await exists(filePath)) {
@@ -42,7 +43,7 @@ async function main(): Promise<void> {
         });
       }
       
-      const notFoundPath = join(DIST_DIR, "404.html");
+      const notFoundPath = join(OUTPUT_DIR, "404.html");
       if (await exists(notFoundPath)) {
         const fileContent = runtimeFile(notFoundPath);
         const buffer = await fileContent.arrayBuffer();

@@ -8,5 +8,3 @@ export const DEFAULT_CONFIG = {
 } as const;
 
 export const DEFAULT_ORDER = 999;
-
-export const DEFAULT_LOGO = "/assets/images/logo.webp";

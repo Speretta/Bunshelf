@@ -8,7 +8,7 @@ export interface DocConfig {
   readonly theme?: {
     readonly default: string;
   };
-  readonly logo?: string;
+  readonly logo?: string | false;
   readonly homePage?: string;
 }
 

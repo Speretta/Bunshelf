@@ -130,7 +130,6 @@ function addLocalePrefix(items: SidebarItem[], locale: string): SidebarItem[] {
 }
 
 function addLocaleToHref(href: string, locale: string): string {
-  if (locale === "en") return href;
   if (href.startsWith(`/${locale}/`)) return href;
   if (href.startsWith("/")) return `/${locale}${href}`;
   return `/${locale}/${href}`;
@@ -177,7 +176,7 @@ async function buildStructure(files: string[], baseDir: string, locale: string):
     const baseHref = entry.isIndex
       ? `/${parts.slice(0, -1).join("/")}` || "/"
       : `/${entry.slug}`;
-    const href = locale === "en" ? baseHref : `/${locale}${baseHref}`;
+    const href = `/${locale}${baseHref}`;
     
     if (parts.length === 1 && !entry.isIndex) {
       root.push({ label, href });
@@ -186,7 +185,7 @@ async function buildStructure(files: string[], baseDir: string, locale: string):
       if (dirPath) {
         const dirItem: SidebarItem = {
           label,
-          href: locale === "en" ? `/${dirPath}` : `/${locale}/${dirPath}`,
+          href: `/${locale}/${dirPath}`,
           items: [],
         };
         dirs.set(dirPath, dirItem);

@@ -6,7 +6,7 @@ locales:
   - tr
 theme:
   default: light
-logo: /assets/images/logo.webp
+logo: false
 sidebar:
   en:
     - label: Getting Started

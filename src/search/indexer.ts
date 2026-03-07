@@ -30,7 +30,7 @@ export async function buildSearchIndex(
       
       results.push({
         title,
-        href: locale === "en" ? `/${slug}` : `/${locale}/${slug}`,
+        href: `/${locale}/${slug}`,
         excerpt,
         content: fullText,
         locale,

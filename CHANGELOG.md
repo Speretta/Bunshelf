@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-03-08
+
+### Breaking Changes
+- Build output directory changed from `dist/` to `out/`
+- `dist/` now contains only compiled CLI code (for npm distribution)
+- All locale pages now in their own subdirectories (e.g., `/en/intro`, `/tr/intro`)
+- Root index.html redirects to `defaultLocale`'s first page
+
+### Added
+- `bunshelf clean` command to remove build output directory
+- `bun run clean` and `bun run clean:all` npm scripts
+- Static `public/404.html` template as fallback
+- TypeScript `.d.ts` declaration files for API type support
+- Default logo now downloaded from GitHub when not provided in config
+
+### Changed
+- Separated CLI distribution (`dist/`) from static site output (`out/`)
+- `tsconfig.build.json` now compiles `server.ts` and `preview.ts` (required by CLI)
+- `--version` command now uses `fs.readFile` for Node.js compatibility
+- Removed `bunshelf-*.png` and `logo*.*` from npm package (still in git)
+- Each locale now has its own directory regardless of `defaultLocale` setting
+
+### Fixed
+- Fixed CLI commands not working after TypeScript compilation
+- Fixed index redirect now uses generated sidebar for correct URL
+
 ## [1.4.7] - 2026-03-08
 
 ### Changed

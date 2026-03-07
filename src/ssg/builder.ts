@@ -12,13 +12,14 @@ import { logger } from "../utils/logger.js";
 import { isValidPath } from "../utils/sanitize.js";
 import { write as runtimeWrite } from "../utils/runtime.js";
 import { renderHead } from "../templates/head.js";
-import { getDocsDir, getDistDir, getPublicDir, getI18nDir } from "../utils/paths.js";
+import { getDocsDir, getOutputDir, getPublicDir, getI18nDir } from "../utils/paths.js";
 import { getHomeUrl, getIndexRedirectUrl, getThemeInitScript } from "../utils/navigation.js";
 import type { SidebarItem } from "../utils/types.js";
 
 const DOCS_DIR = getDocsDir();
-const DIST_DIR = getDistDir();
+const OUTPUT_DIR = getOutputDir();
 const PUBLIC_DIR = getPublicDir();
+const DEFAULT_LOGO_URL = "https://raw.githubusercontent.com/Speretta/Bunshelf/main/public/assets/images/logo.webp";
 
 interface BuildContext {
   config: Awaited<ReturnType<typeof loadConfig>>;
@@ -44,9 +45,15 @@ async function build(): Promise<void> {
 
     const ctx: BuildContext = { config, searchIndex };
 
-    await mkdir(DIST_DIR, { recursive: true });
+    await mkdir(OUTPUT_DIR, { recursive: true });
 
-    await cp(join(PUBLIC_DIR, "assets"), join(DIST_DIR, "assets"), { recursive: true });
+    await cp(join(PUBLIC_DIR, "assets", "css"), join(OUTPUT_DIR, "assets", "css"), { recursive: true });
+    await cp(join(PUBLIC_DIR, "assets", "js"), join(OUTPUT_DIR, "assets", "js"), { recursive: true });
+
+    if (!config.logo) {
+      const logoDownloaded = await downloadDefaultLogo(OUTPUT_DIR);
+      ctx.config = { ...config, logo: logoDownloaded ? "/assets/images/logo.webp" : false };
+    }
 
     for (const locale of config.locales) {
       console.log(`📝 Building locale: ${locale}`);
@@ -54,19 +61,21 @@ async function build(): Promise<void> {
       await buildLocalePages(ctx, locale);
     }
 
-    const searchIndexPath = join(DIST_DIR, "search-index.json");
+    const searchIndexPath = join(OUTPUT_DIR, "search-index.json");
     await runtimeWrite(searchIndexPath, JSON.stringify(searchIndex));
 
     await write404Pages(ctx);
+    
+    const defaultLocaleSidebar = await generateSidebar(DOCS_DIR, ctx.config.defaultLocale, ctx.config.sidebar?.[ctx.config.defaultLocale]);
     await writeIndexRedirect(
       ctx.config.defaultLocale, 
       ctx.config.base, 
       ctx.config.homePage, 
-      ctx.config.sidebar?.[ctx.config.defaultLocale]
+      defaultLocaleSidebar
     );
 
     console.log("✅ Build complete!");
-    console.log(`📁 Output: ${DIST_DIR}`);
+    console.log(`📁 Output: ${OUTPUT_DIR}`);
     logger.info("Build completed", { 
       locales: config.locales.length,
       pages: searchIndex.length 
@@ -75,6 +84,33 @@ async function build(): Promise<void> {
     console.error("❌ Build failed!");
     logger.error("Build failed", { error });
     process.exit(1);
+  }
+}
+
+async function downloadDefaultLogo(distDir: string): Promise<boolean> {
+  const logoDir = join(distDir, "assets", "images");
+  await mkdir(logoDir, { recursive: true });
+  
+  console.log("  📥 Downloading default logo from GitHub...");
+  logger.info("Downloading default logo");
+  
+  try {
+    const response = await fetch(DEFAULT_LOGO_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to download logo: ${response.statusText}`);
+    }
+    
+    const buffer = await response.arrayBuffer();
+    const logoPath = join(logoDir, "logo.webp");
+    await runtimeWrite(logoPath, Buffer.from(buffer));
+    
+    console.log("  ✓ Default logo downloaded");
+    logger.debug("Default logo saved", { path: logoPath });
+    return true;
+  } catch (error) {
+    console.error("  ⚠️  Failed to download default logo. Please provide your own logo or check internet connection.");
+    logger.warn("Failed to download default logo", { error });
+    return false;
   }
 }
 
@@ -113,15 +149,15 @@ async function buildPage(
     
     let outputPath: string;
     if (slug === "index") {
-      outputPath = join(DIST_DIR, locale === "en" ? "" : locale, "index.html");
+      outputPath = join(OUTPUT_DIR, locale, "index.html");
     } else if (slug.endsWith("/index")) {
       const dirSlug = slug.replace(/\/index$/, "");
-      outputPath = join(DIST_DIR, locale === "en" ? "" : locale, dirSlug, "index.html");
+      outputPath = join(OUTPUT_DIR, locale, dirSlug, "index.html");
     } else {
-      outputPath = join(DIST_DIR, locale === "en" ? "" : locale, slug, "index.html");
+      outputPath = join(OUTPUT_DIR, locale, slug, "index.html");
     }
 
-    if (!isValidPath(DIST_DIR, outputPath)) {
+    if (!isValidPath(OUTPUT_DIR, outputPath)) {
       logger.error("Invalid output path", { outputPath });
       return;
     }
@@ -170,11 +206,7 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
 </body>
 </html>`;
 
-    if (locale === "en") {
-      await runtimeWrite(join(DIST_DIR, "404.html"), html);
-    }
-    
-    const locale404Path = join(DIST_DIR, locale, "404.html");
+    const locale404Path = join(OUTPUT_DIR, locale, "404.html");
     await mkdir(dirname(locale404Path), { recursive: true });
     await runtimeWrite(locale404Path, html);
   }
@@ -184,7 +216,7 @@ async function writeIndexRedirect(defaultLocale: string, base: string = "", home
   const redirectUrl = getIndexRedirectUrl(defaultLocale, base, homePage, sidebar);
   
   const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
-  await runtimeWrite(join(DIST_DIR, "index.html"), html);
+  await runtimeWrite(join(OUTPUT_DIR, "index.html"), html);
 }
 
 build().catch(console.error);

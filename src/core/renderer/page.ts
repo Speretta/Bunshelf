@@ -68,9 +68,9 @@ export function renderPage(options: PageRenderOptions): string {
 
   return `<!DOCTYPE html>
 <html lang="${locale}">
-${renderHead({ title, siteTitle: config.title, description, logo: config.logo, base })}
+${renderHead({ title, siteTitle: config.title, description, logo: config.logo || undefined, base })}
 <body>
-  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo ? base + config.logo : base + "/assets/images/logo.webp" })}
+  ${renderNavbarWithThemes({ title: config.title, homeUrl, themes, i18n, logo: config.logo ? base + config.logo : undefined })}
 
   <div class="layout">
     ${renderSidebarPanel({ localeLinks, sidebarHtml })}

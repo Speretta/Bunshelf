@@ -5,11 +5,11 @@
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "noEmit": false,
     "allowImportingTsExtensions": false,
     "moduleResolution": "node"
   },
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts", "src/server.ts", "src/ssg/preview.ts"]
+  "exclude": ["src/**/*.test.ts"]
 }

@@ -7,9 +7,7 @@ export function getHomeUrl(
   sidebar: SidebarItem[] | undefined
 ): string {
   if (homePage) {
-    return locale === "en"
-      ? `${base}${homePage}`
-      : `${base}/${locale}${homePage}`;
+    return `${base}/${locale}${homePage}`;
   }
 
   const firstPage = sidebar?.[0]?.items?.[0]?.href;
@@ -18,7 +16,7 @@ export function getHomeUrl(
     return `${base}${firstPage}`;
   }
 
-  return locale === "en" ? `${base}/intro` : `${base}/${locale}/intro`;
+  return `${base}/${locale}/intro`;
 }
 
 export function getIndexRedirectUrl(
@@ -28,9 +26,7 @@ export function getIndexRedirectUrl(
   sidebar: SidebarItem[] | undefined
 ): string {
   if (homePage) {
-    return defaultLocale === "en"
-      ? `${base}${homePage}`
-      : `${base}/${defaultLocale}${homePage}`;
+    return `${base}/${defaultLocale}${homePage}`;
   }
 
   const firstPage = sidebar?.[0]?.items?.[0]?.href;
@@ -39,7 +35,7 @@ export function getIndexRedirectUrl(
     return `${base}${firstPage}`;
   }
 
-  return defaultLocale === "en" ? `${base}/intro` : `${base}/${defaultLocale}/intro`;
+  return `${base}/${defaultLocale}/intro`;
 }
 
 export function getThemeInitScript(): string {

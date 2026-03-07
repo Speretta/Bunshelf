@@ -1,32 +1,25 @@
 {
   "name": "bunshelf",
-  "version": "1.4.7",
+  "version": "1.5.0",
   "description": "A modern, fast, and beautiful documentation generator with built-in themes, search, and i18n support",
   "author": "speretta <speretta@bunshelf>",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "bin": {
     "bunshelf": "dist/cli.js"
   },
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
+    ".": "./dist/index.js",
     "./cli": "./dist/cli.js"
   },
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
-    "dist/**/*.js.map",
-    "dist/**/*.d.ts.map",
     "dist/i18n/translations/*.json",
-    "dist/assets/css/*.css",
-    "dist/assets/js/main.js",
-    "dist/assets/images/logo.webp",
-    "public/"
+    "public/404.html",
+    "public/assets/css/",
+    "public/assets/js/"
   ],
   "sideEffects": false,
   "keywords": [
@@ -52,10 +45,12 @@
     "dev": "bun run --hot src/server.ts",
     "build": "bun run src/ssg/builder.ts",
     "preview": "bun run src/ssg/preview.ts",
-    "prepublishOnly": "bun run build:ts && bun run copy:i18n && bun run copy:assets",
+    "clean": "rm -rf out",
+    "clean:all": "rm -rf dist out",
+    "prepublishOnly": "bun run build:ts && bun run copy:i18n",
     "build:ts": "tsc --project tsconfig.build.json",
     "copy:i18n": "mkdir -p dist/i18n/translations && cp src/i18n/translations/*.json dist/i18n/translations/",
-    "copy:assets": "mkdir -p dist/assets/images && cp public/assets/images/logo.webp dist/assets/images/",
+    "copy:assets": "mkdir -p dist/assets && cp -r public/assets/css public/assets/js dist/assets/",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "typecheck": "tsc --noEmit",
