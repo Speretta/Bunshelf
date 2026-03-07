@@ -1,6 +1,6 @@
 {
   "name": "bunshelf",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "A modern, fast, and beautiful documentation generator with built-in themes, search, and i18n support",
   "author": "speretta <speretta@bunshelf>",
   "license": "MIT",
@@ -18,8 +18,15 @@
     "./cli": "./dist/cli.js"
   },
   "files": [
-    "dist",
-    "public"
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts.map",
+    "dist/i18n/translations/*.json",
+    "dist/assets/css/*.css",
+    "dist/assets/js/main.js",
+    "dist/assets/images/logo.webp",
+    "public/"
   ],
   "sideEffects": false,
   "keywords": [

@@ -12,12 +12,7 @@ node_modules/
 *.tsbuildinfo
 
 # Build output
-dist/**/*.html
-dist/search-index.json
-dist/intro/
-dist/getting-started/
-dist/advanced/
-dist/changelog/
+dist/
 
 # Environment files
 .env
