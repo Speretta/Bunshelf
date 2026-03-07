@@ -54,7 +54,6 @@
   z-index: 150;
   gap: 1rem;
   max-width: 100vw;
-  overflow: hidden;
 }
 
 .navbar-brand {
