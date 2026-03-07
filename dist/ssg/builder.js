@@ -91,13 +91,14 @@ async function buildPage(ctx, locale, filePath, sidebar) {
             logger.error("Invalid output path", { outputPath });
             return;
         }
+        const normalizedSlug = slug.replace(/\/index$/, "") || "index";
         const pageHtml = renderPage({
             locale,
             title: meta.title,
             description: meta.description || ctx.config.description,
             content: html,
             sidebar,
-            currentSlug: slug,
+            currentSlug: normalizedSlug,
             config: ctx.config,
             searchIndex: ctx.searchIndex,
             themes,

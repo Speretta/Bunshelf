@@ -1,6 +1,6 @@
 {
   "name": "bunshelf",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "A modern, fast, and beautiful documentation generator with built-in themes, search, and i18n support",
   "author": "speretta <speretta@bunshelf>",
   "license": "MIT",
