@@ -124,7 +124,9 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
         if (locale === "en") {
             await runtimeWrite(join(DIST_DIR, "404.html"), html);
         }
-        await runtimeWrite(join(DIST_DIR, locale, "404.html"), html);
+        const locale404Path = join(DIST_DIR, locale, "404.html");
+        await mkdir(dirname(locale404Path), { recursive: true });
+        await runtimeWrite(locale404Path, html);
     }
 }
 async function writeIndexRedirect(defaultLocale, base = "", homePage, sidebar) {
