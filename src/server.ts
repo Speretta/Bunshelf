@@ -122,7 +122,7 @@ async function handleSearch(url: string): Promise<Response> {
 
 async function handlePage(url: string): Promise<Response> {
   if (!state) {
-    return handle404("en");
+    return handle404();
   }
   
   const params = parseRoute(url, state.config);
@@ -136,7 +136,7 @@ async function handlePage(url: string): Promise<Response> {
   const safeLocale = sanitizeLocale(locale, state.config.locales);
   if (!safeLocale) {
     logger.warn("Invalid locale requested", { locale, url });
-    return handle404("en");
+    return handle404(state.config.defaultLocale);
   }
   
   const safeSlug = sanitizeSlug(slug);
@@ -210,19 +210,20 @@ async function resolveDocPath(locale: string, slug: string): Promise<string | nu
   return null;
 }
 
-async function handle404(locale: string = "en"): Promise<Response> {
+async function handle404(locale?: string): Promise<Response> {
+  const effectiveLocale = locale ?? state?.config.defaultLocale ?? "en";
   if (!state) {
     return new Response("Not Found", { status: 404 });
   }
   
-  const sidebar = await generateSidebar(DOCS_DIR, locale, state.config.sidebar?.[locale]);
-  const i18n = getTranslations(locale);
+  const sidebar = await generateSidebar(DOCS_DIR, effectiveLocale, state.config.sidebar?.[effectiveLocale]);
+  const i18n = getTranslations(effectiveLocale);
   const { title, message, home } = getNotFoundTranslations(i18n);
   const base = state.config.base || "";
-  const homeUrl = getHomeUrl(locale, base, state.config.homePage, sidebar);
+  const homeUrl = getHomeUrl(effectiveLocale, base, state.config.homePage, sidebar);
   
   const pageHtml = renderPage({
-    locale,
+    locale: effectiveLocale,
     title: `404 - ${title}`,
     description: message,
     content: `

@@ -26,10 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--version` command now uses `fs.readFile` for Node.js compatibility
 - Removed `bunshelf-*.png` and `logo*.*` from npm package (still in git)
 - Each locale now has its own directory regardless of `defaultLocale` setting
+- Removed all hardcoded `"en"` locale checks - now fully respects `defaultLocale` from config
 
 ### Fixed
 - Fixed CLI commands not working after TypeScript compilation
 - Fixed index redirect now uses generated sidebar for correct URL
+- Fixed sidebar active link not working for non-default locales
+- Fixed locale links and navigation using correct locale-prefixed URLs
 
 ## [1.4.7] - 2026-03-08
 

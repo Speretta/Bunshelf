@@ -49,9 +49,9 @@ export function renderPage(options: PageRenderOptions): string {
   const sidebarHtml = renderSidebar(sidebar, currentSlug, locale, base);
   const localeLinks = renderLocaleLinks(config.locales, locale, currentSlug, base);
 
-  const homeUrl = locale === "en" ? base + "/" : base + `/${locale}`;
+  const homeUrl = base + `/${locale}`;
 
-  const currentHref = locale === "en" ? `/${currentSlug}` : `/${locale}/${currentSlug}`;
+  const currentHref = `/${locale}/${currentSlug}`;
   const flatPages = flattenSidebar(sidebar);
   
   const normalizeHref = (href: string): string => href.replace(/\/+$/, "");

@@ -2,7 +2,7 @@ import type { SidebarItem } from "../../utils/types.js";
 
 export function renderSidebar(items: SidebarItem[], currentSlug: string, locale: string = "en", base: string = ""): string {
   const normalizeHref = (href: string): string => href.replace(/\/+$/, "");
-  const currentHref = normalizeHref(locale === "en" ? `/${currentSlug}` : `/${locale}/${currentSlug}`);
+  const currentHref = normalizeHref(`/${locale}/${currentSlug}`);
   const currentHrefNoLocale = normalizeHref(`/${currentSlug}`);
   
   return items
