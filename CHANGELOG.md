@@ -11,9 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Browser cache headers for static assets (JS, CSS, images, fonts): 1 year cache with `immutable` directive
 - HTML pages use `no-cache` to ensure fresh content
 
-### Changed
-- Documentation updated with correct package size: ~84KB (was incorrectly stated as ~3.3MB)
-
 ## [1.5.5] - 2026-03-08
 
 ### Breaking Changes
@@ -28,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default values are automatically assigned for missing locale settings
 
 ### Changed
+- Documentation updated with correct package size: ~84KB (was incorrectly stated as ~3.3MB)
 - `locales` config now uses object format:
   ```yaml
   locales:
