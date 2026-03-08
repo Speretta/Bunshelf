@@ -50,14 +50,16 @@ src/
 
 ### {green}Uluslararasılaştırma{/}
 
-Otomatik yerel algılama ile yerleşik i18n desteği:
+Özel yerel önekleri ile yerleşik i18n desteği:
 
 ```yaml
 locales:
-  - en
-  - tr
-  - de
-  - fr
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
 ```
 
 ### {purple}Tema Sistemi{/}

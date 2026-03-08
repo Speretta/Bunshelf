@@ -51,14 +51,16 @@ src/
 
 ### {green}Internationalization{/}
 
-Built-in i18n support with automatic locale detection:
+Built-in i18n support with custom locale prefixes:
 
 ```yaml
 locales:
-  - en
-  - tr
-  - de
-  - fr
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
 ```
 
 ### {purple}Theme System{/}
