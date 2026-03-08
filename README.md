@@ -10,15 +10,17 @@ A modern, fast, and beautiful documentation generator with built-in themes, sear
 
 ### Light Mode
 
-<img src="./public/assets/images/bunshelf-desktop.png" alt="Bunshelf Desktop - Light" width="450">
-
-<img src="./public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile - Light" width="150">
+<p>
+  <img src="https://raw.githubusercontent.com/Speretta/Bunshelf/refs/heads/main/public/assets/images/bunshelf-desktop.png" alt="Bunshelf Desktop - Light" width="350">
+  <img src="https://raw.githubusercontent.com/Speretta/Bunshelf/refs/heads/main/public/assets/images/bunshelf-mobile.png" alt="Bunshelf Mobile - Light" width="120">
+</p>
 
 ### Dark Mode
 
-<img src="./public/assets/images/bunshelf-desktop-dark.png" alt="Bunshelf Desktop - Dark" width="450">
-
-<img src="./public/assets/images/bunshelf-mobile-dark.png" alt="Bunshelf Mobile - Dark" width="150">
+<p>
+  <img src="https://raw.githubusercontent.com/Speretta/Bunshelf/refs/heads/main/public/assets/images/bunshelf-desktop-dark.png" alt="Bunshelf Desktop - Dark" width="350">
+  <img src="https://raw.githubusercontent.com/Speretta/Bunshelf/refs/heads/main/public/assets/images/bunshelf-mobile-dark.png" alt="Bunshelf Mobile - Dark" width="120">
+</p>
 
 ## Features
 
