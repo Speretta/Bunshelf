@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default values are automatically assigned for missing locale settings
 
 ### Changed
+- Documentation updated with correct package size: ~84KB (was incorrectly stated as ~3.3MB)
 - `locales` config now uses object format:
   ```yaml
   locales:
