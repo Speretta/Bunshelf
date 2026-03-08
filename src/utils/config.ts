@@ -85,8 +85,9 @@ export function validateConfig(config: Partial<DocConfig>): DocConfig {
           errors.push(`invalid locale format: ${locale}`);
         }
         
-        if (!localeConfig.localePrefix) {
+        if (localeConfig.localePrefix === undefined) {
           if (locale === config.defaultLocale) {
+            warnings.push(`locale "${locale}" has no localePrefix defined, using "" (no prefix) as default`);
             localeConfig.localePrefix = "";
           } else {
             warnings.push(`locale "${locale}" has no localePrefix defined, using "${locale}" as default`);
