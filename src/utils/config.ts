@@ -86,8 +86,12 @@ export function validateConfig(config: Partial<DocConfig>): DocConfig {
         }
         
         if (!localeConfig.localePrefix) {
-          warnings.push(`locale "${locale}" has no localePrefix defined, using "${locale}" as default`);
-          localeConfig.localePrefix = locale;
+          if (locale === config.defaultLocale) {
+            localeConfig.localePrefix = "";
+          } else {
+            warnings.push(`locale "${locale}" has no localePrefix defined, using "${locale}" as default`);
+            localeConfig.localePrefix = locale;
+          }
         }
         
         if (!localeConfig.indexPage) {
