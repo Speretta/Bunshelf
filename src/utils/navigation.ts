@@ -4,7 +4,8 @@ export function getLocalePrefix(
   locale: string,
   config: DocConfig
 ): string {
-  return config.locales[locale]?.localePrefix || locale;
+  const prefix = config.locales[locale]?.localePrefix;
+  return prefix !== undefined ? prefix : locale;
 }
 
 export function getHomeUrl(
