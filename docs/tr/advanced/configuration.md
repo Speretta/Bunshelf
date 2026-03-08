@@ -16,12 +16,17 @@ Ana yapılandırma `docs/config.yaml` dosyasındadır:
 title: Dokümanlarım
 description: Dokümantasyon sitem
 defaultLocale: tr
+base: ""
+logo: false
 locales:
-  - en
-  - tr
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
 theme:
   default: light
-logo: /assets/images/logo.webp
 sidebar:
   tr:
     - label: Bölüm
@@ -37,39 +42,89 @@ sidebar:
 | `title` | string | "Bunshelf" | Gezinme çubuğunda görünen site başlığı |
 | `description` | string | - | SEO için meta açıklama |
 | `defaultLocale` | string | "en" | Varsayılan dil kodu |
-| `locales` | string[] | ["en"] | Mevcut dillerin listesi |
-| `base` | string | "" | Alt dizin dağıtımı için temel URL yolu (GitHub Actions'da otomatik tespit) |
-| `logo` | string | - | Logo resmi yolu |
-| `homePage` | string | - | Özel ana sayfa yolu (ör. `/welcome/intro`) |
+| `locales` | object | { en: {} } | Dil yapılandırması (`indexPage` ve `localePrefix` ile) |
+| `base` | string | "" | Alt dizin dağıtımı için temel URL yolu |
+| `logo` | string \| false | - | Logo resmi yolu, veya varsayılan logo için `false` |
 
-### Ana Sayfa Yapılandırması
+### Temel URL (Base)
 
-`homePage` seçeneği, dokümantasyonunuz için özel bir açılış sayfası tanımlamanıza olanak tanır:
+Kök dizin dağıtımı için `base` seçeneği `""` (boş dize) olarak ayarlanmalıdır:
 
 ```yaml
-homePage: /welcome/intro
+base: ""
 ```
 
-Bu şunları etkiler:
+Alt dizin dağıtımı için (ör. GitHub Pages), depo adınızı yazın:
 
-- {green}Kök yönlendirme{/} - Kullanıcılar `/` veya `/{locale}/` adresini ziyaret ettiğinde, ana sayfanıza yönlendirilir
-- {green}404 sayfaları{/} - 404 sayfalarındaki "Ana Sayfa" butonu ana sayfanıza bağlantı verir
-- {green}Gezinme{/} - Logo ve ana sayfa bağlantıları ana sayfanıza işaret eder
-
-#### Akıllı Fallback
-
-`homePage` tanımlanmamışsa, Bunshelf bu fallback stratejisini kullanır:
-
-1. Kenar çubuğu yapılandırmasındaki ilk sayfa
-2. Varsayılan `/intro` sayfası
-3. Kök yol `/`
-
-::: tip Örnek
-Dokümantasyon yapınız `/welcome/intro` ise `/intro` yerine, şunu ayarlayın:
 ```yaml
-homePage: /welcome/intro
+base: /repo-adim
 ```
+
+::: note Otomatik Tespit
+GitHub Actions ile dağıtım yaparken, `base` URL'si `GITHUB_REPOSITORY` ortam değişkeninden otomatik olarak tespit edilir.
 :::
+
+### Logo Yapılandırması
+
+Varsayılan Bunshelf logosunu kullanmak için `logo: false` ayarlayın:
+
+```yaml
+logo: false
+```
+
+Özel logo kullanmak için yolu belirtin:
+
+```yaml
+logo: /assets/images/benim-logom.webp
+```
+
+Özel logonuzu `public/assets/images/` dizinine yerleştirin.
+
+### Locales Yapılandırması
+
+`locales` seçeneği artık her dil için ayarları içeren object formatını kullanıyor:
+
+```yaml
+locales:
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+```
+
+#### Dil Seçenekleri
+
+| Seçenek | Tür | Varsayılan | Açıklama |
+|---------|-----|------------|----------|
+| `indexPage` | string | "/intro" | Bu dil için ana sayfa yolu |
+| `localePrefix` | string | dil kodu | URL öneki (ör. `tr` yerine `turkish`) |
+
+#### Varsayılan Davranış
+
+- {green}Varsayılan dil{/} - URL öneki eklenmez (ör. `/intro`)
+- {green}Diğer diller{/} - URL'de `localePrefix` kullanılır (ör. `/turkish/intro`)
+- {green}Eksik ayarlar{/} - Uyarı gösterilir ve varsayılan değerler atanır
+
+#### URL Yapısı Örneği
+
+Bu yapılandırma ile:
+
+```yaml
+defaultLocale: en
+locales:
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+```
+
+URL'ler şu şekilde olur:
+- İngilizce (varsayılan): `/intro`, `/getting-started/installation`
+- Türkçe: `/turkish/intro`, `/turkish/getting-started/installation`
 
 ### Temel URL Yapılandırması
 
@@ -180,17 +235,23 @@ sidebar:
 # Site meta verileri
 title: Dokümantasyonum
 description: Ürünümüz için kapsamlı bir rehber
-defaultLocale: tr
+defaultLocale: en
+base: ""
+logo: false
 locales:
-  - en
-  - tr
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+  de:
+    indexPage: /intro
+    localePrefix: german
 
 # Tema ayarları
 theme:
   default: light
-
-# Markalaşma
-logo: /assets/images/sirket-logosu.webp
 
 # Türkçe kenar çubuğu
 sidebar:
@@ -199,27 +260,27 @@ sidebar:
       collapsed: false
       items:
         - label: Giriş
-          href: /tr/intro
+          href: /intro
         - label: Kurulum
-          href: /tr/getting-started/installation
+          href: /getting-started/installation
         - label: Hızlı Başlangıç
-          href: /tr/getting-started/quick-start
+          href: /getting-started/quick-start
     - label: Özellikler
       items:
         - label: Markdown Sözdizimi
-          href: /tr/features/markdown-syntax
+          href: /features/markdown-syntax
         - label: Temalar
-          href: /tr/features/themes
+          href: /features/themes
         - label: Arama
-          href: /tr/features/search
+          href: /features/search
         - label: Çoklu Dil Desteği
-          href: /tr/features/i18n
+          href: /features/i18n
     - label: Gelişmiş
       items:
         - label: Yapılandırma
-          href: /tr/advanced/configuration
+          href: /advanced/configuration
         - label: Özelleştirme
-          href: /tr/advanced/customization
+          href: /advanced/customization
 ```
 
 ## Özel Temalar

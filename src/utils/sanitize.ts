@@ -1,3 +1,5 @@
+import type { LocaleConfig } from "./types.js";
+
 const PATH_TRAVERSAL_PATTERNS = [
   /\.\./,
   /\.\.\\/,
@@ -40,7 +42,7 @@ export function sanitizeSlug(slug: string): string | null {
   return safeSlug || null;
 }
 
-export function sanitizeLocale(locale: string, allowedLocales: string[]): string | null {
+export function sanitizeLocale(locale: string, allowedLocales: Record<string, LocaleConfig>): string | null {
   if (!locale || typeof locale !== "string") {
     return null;
   }
@@ -55,7 +57,7 @@ export function sanitizeLocale(locale: string, allowedLocales: string[]): string
     return null;
   }
 
-  return allowedLocales.includes(trimmed) ? trimmed : null;
+  return trimmed in allowedLocales ? trimmed : null;
 }
 
 export function sanitizePath(path: string): string | null {

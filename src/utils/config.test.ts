@@ -6,7 +6,7 @@ describe("validateConfig", () => {
     const result = validateConfig({});
     expect(result.title).toBe("Bunshelf");
     expect(result.defaultLocale).toBe("en");
-    expect(result.locales).toEqual(["en"]);
+    expect(result.locales).toEqual({ en: { indexPage: "/intro", localePrefix: "en" } });
   });
 
   test("validates title length", () => {
@@ -20,13 +20,13 @@ describe("validateConfig", () => {
   });
 
   test("validates locale format", () => {
-    expect(() => validateConfig({ locales: ["english"] })).toThrow();
-    expect(() => validateConfig({ locales: ["e"] })).toThrow();
+    expect(() => validateConfig({ locales: { english: {} } })).toThrow();
+    expect(() => validateConfig({ locales: { e: {} } })).toThrow();
   });
 
   test("accepts valid locale formats", () => {
-    const result = validateConfig({ locales: ["en", "tr", "en-gb"] });
-    expect(result.locales).toEqual(["en", "tr", "en-gb"]);
+    const result = validateConfig({ locales: { en: {}, tr: {}, "en-gb": {} } });
+    expect(Object.keys(result.locales)).toEqual(["en", "tr", "en-gb"]);
   });
 
   test("trims title and description", () => {
@@ -40,13 +40,23 @@ describe("validateConfig", () => {
       title: "My Documentation",
       description: "A comprehensive guide",
       defaultLocale: "en",
-      locales: ["en", "tr"],
+      locales: { en: { indexPage: "/intro", localePrefix: "english" }, tr: { indexPage: "/intro", localePrefix: "turkish" } },
       theme: { default: "dark" },
     };
     const result = validateConfig(config);
     expect(result.title).toBe("My Documentation");
     expect(result.description).toBe("A comprehensive guide");
     expect(result.defaultLocale).toBe("en");
-    expect(result.locales).toEqual(["en", "tr"]);
+    expect(Object.keys(result.locales)).toEqual(["en", "tr"]);
+  });
+
+  test("sets default localePrefix when not provided", () => {
+    const result = validateConfig({ locales: { en: {} } });
+    expect(result.locales["en"]?.localePrefix).toBe("en");
+  });
+
+  test("sets default indexPage when not provided", () => {
+    const result = validateConfig({ locales: { en: {} } });
+    expect(result.locales["en"]?.indexPage).toBe("/intro");
   });
 });

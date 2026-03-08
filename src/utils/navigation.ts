@@ -1,13 +1,24 @@
-import type { SidebarItem } from "./types.js";
+import type { SidebarItem, DocConfig } from "./types.js";
+
+export function getLocalePrefix(
+  locale: string,
+  config: DocConfig
+): string {
+  return config.locales[locale]?.localePrefix || locale;
+}
 
 export function getHomeUrl(
   locale: string,
   base: string,
-  homePage: string | undefined,
+  config: DocConfig,
   sidebar: SidebarItem[] | undefined
 ): string {
-  if (homePage) {
-    return `${base}/${locale}${homePage}`;
+  const isDefaultLocale = config.defaultLocale === locale;
+  const prefix = isDefaultLocale ? "" : `/${getLocalePrefix(locale, config)}`;
+  const indexPage = config.locales[locale]?.indexPage;
+  
+  if (indexPage) {
+    return `${base}${prefix}${indexPage}`;
   }
 
   const firstPage = sidebar?.[0]?.items?.[0]?.href;
@@ -16,17 +27,21 @@ export function getHomeUrl(
     return `${base}${firstPage}`;
   }
 
-  return `${base}/${locale}/intro`;
+  return `${base}${prefix}/intro`;
 }
 
 export function getIndexRedirectUrl(
   defaultLocale: string,
   base: string,
-  homePage: string | undefined,
+  config: DocConfig,
   sidebar: SidebarItem[] | undefined
 ): string {
-  if (homePage) {
-    return `${base}/${defaultLocale}${homePage}`;
+  const isDefaultLocale = config.defaultLocale === defaultLocale;
+  const prefix = isDefaultLocale ? "" : `/${getLocalePrefix(defaultLocale, config)}`;
+  const indexPage = config.locales[defaultLocale]?.indexPage;
+  
+  if (indexPage) {
+    return `${base}${prefix}${indexPage}`;
   }
 
   const firstPage = sidebar?.[0]?.items?.[0]?.href;
@@ -35,7 +50,7 @@ export function getIndexRedirectUrl(
     return `${base}${firstPage}`;
   }
 
-  return `${base}/${defaultLocale}/intro`;
+  return `${base}${prefix}/intro`;
 }
 
 export function getThemeInitScript(): string {

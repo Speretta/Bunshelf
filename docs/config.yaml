@@ -1,12 +1,17 @@
 title: Bunshelf
 description: A fast, modular documentation website generator powered by Bun.js
-defaultLocale: en
-locales:
-  - en
-  - tr
+base: ''
+logo: false
 theme:
   default: light
-logo: false
+locales:
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+defaultLocale: en
 sidebar:
   en:
     - label: Getting Started
@@ -37,24 +42,24 @@ sidebar:
     - label: Başlarken
       items:
         - label: Giriş
-          href: /tr/intro
+          href: /intro
         - label: Kurulum
-          href: /tr/getting-started/installation
+          href: /getting-started/installation
         - label: Hızlı Başlangıç
-          href: /tr/getting-started/quick-start
+          href: /getting-started/quick-start
     - label: Özellikler
       items:
         - label: Markdown Sözdizimi
-          href: /tr/features/markdown-syntax
+          href: /features/markdown-syntax
         - label: Temalar
-          href: /tr/features/themes
+          href: /features/themes
         - label: Arama
-          href: /tr/features/search
+          href: /features/search
         - label: Çoklu Dil Desteği
-          href: /tr/features/i18n
+          href: /features/i18n
     - label: Gelişmiş
       items:
         - label: Yapılandırma
-          href: /tr/advanced/configuration
+          href: /advanced/configuration
         - label: Özelleştirme
-          href: /tr/advanced/customization
+          href: /advanced/customization

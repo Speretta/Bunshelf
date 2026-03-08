@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.5] - 2026-03-08
+
+### Breaking Changes
+- **Redesigned `locales` configuration** - Now uses object format with per-locale settings instead of string array
+- Removed `indexPages` and `localePrefixes` config options (now part of `locales`)
+- Default locale no longer uses URL prefix (e.g., `/intro` instead of `/english/intro`)
+
+### Added
+- `localePrefix` option per locale for custom URL prefixes (e.g., `turkish` instead of `tr`)
+- `indexPage` option per locale for custom landing pages
+- Automatic warnings when `localePrefix` or `indexPage` are not defined
+- Default values are automatically assigned for missing locale settings
+
+### Changed
+- `locales` config now uses object format:
+  ```yaml
+  locales:
+    en:
+      indexPage: /intro
+      localePrefix: english
+    tr:
+      indexPage: /intro
+      localePrefix: turkish
+  ```
+- Sidebar `href` values no longer need manual locale prefix (added automatically)
+- Logo link respects default locale (no prefix added for default language)
+- Locale switcher respects default locale (no prefix added for default language)
+- Documentation updated with new `locales` configuration format
+
+### Fixed
+- Sidebar active link now correctly matches pages with `localePrefix`
+- Logo link now correctly goes to `/intro` for default locale instead of `/english/intro`
+- Locale switcher URLs now correct for default locale (no prefix)
+
 ## [1.5.4] - 2026-03-08
 
 ### Fixed

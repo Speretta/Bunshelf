@@ -16,12 +16,17 @@ The main configuration is in `docs/config.yaml`:
 title: My Docs
 description: My documentation site
 defaultLocale: en
+base: ""
+logo: false
 locales:
-  - en
-  - tr
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
 theme:
   default: light
-logo: /assets/images/logo.webp
 sidebar:
   en:
     - label: Section
@@ -37,39 +42,89 @@ sidebar:
 | `title` | string | "Bunshelf" | Site title displayed in navbar |
 | `description` | string | - | Meta description for SEO |
 | `defaultLocale` | string | "en" | Default language code |
-| `locales` | string[] | ["en"] | List of available locales |
-| `base` | string | "" | Base URL path for subdirectory deployment (auto-detected in GitHub Actions) |
-| `logo` | string | - | Path to logo image |
-| `homePage` | string | - | Custom home page path (e.g., `/welcome/intro`) |
+| `locales` | object | { en: {} } | Locale configuration with `indexPage` and `localePrefix` |
+| `base` | string | "" | Base URL path for subdirectory deployment |
+| `logo` | string \| false | - | Path to logo image, or `false` to use default logo |
 
-### Home Page Configuration
+### Base URL
 
-The `homePage` option allows you to define a custom landing page for your documentation:
+The `base` option should be set to `""` (empty string) for root deployment:
 
 ```yaml
-homePage: /welcome/intro
+base: ""
 ```
 
-This affects:
+For subdirectory deployment (e.g., GitHub Pages), set it to your repository name:
 
-- {green}Root redirect{/} - When users visit `/` or `/{locale}/`, they'll be redirected to your home page
-- {green}404 pages{/} - The "Go Home" button on 404 pages will link to your home page
-- {green}Navigation{/} - Logo and home links point to your home page
-
-#### Smart Fallback
-
-If `homePage` is not defined, Bunshelf uses this fallback strategy:
-
-1. First page in sidebar configuration
-2. Default `/intro` page
-3. Root path `/`
-
-::: tip Example
-If your documentation structure is `/welcome/intro` instead of `/intro`, set:
 ```yaml
-homePage: /welcome/intro
+base: /my-repo
 ```
+
+::: note Automatic Detection
+When deploying with GitHub Actions, the `base` URL is automatically detected from the `GITHUB_REPOSITORY` environment variable.
 :::
+
+### Logo Configuration
+
+Set `logo: false` to use the default Bunshelf logo:
+
+```yaml
+logo: false
+```
+
+To use a custom logo, provide the path:
+
+```yaml
+logo: /assets/images/my-logo.webp
+```
+
+Place your custom logo in `public/assets/images/` directory.
+
+### Locales Configuration
+
+The `locales` option now uses an object format with per-locale settings:
+
+```yaml
+locales:
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+```
+
+#### Locale Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `indexPage` | string | "/intro" | Landing page path for this locale |
+| `localePrefix` | string | locale code | URL prefix for this locale (e.g., `turkish` instead of `tr`) |
+
+#### Default Behavior
+
+- {green}Default locale{/} - No URL prefix added (e.g., `/intro`)
+- {green}Other locales{/} - Uses `localePrefix` in URL (e.g., `/turkish/intro`)
+- {green}Missing settings{/} - Warnings are shown and defaults are applied
+
+#### URL Structure Example
+
+With this configuration:
+
+```yaml
+defaultLocale: en
+locales:
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+```
+
+The URLs will be:
+- English (default): `/intro`, `/getting-started/installation`
+- Turkish: `/turkish/intro`, `/turkish/getting-started/installation`
 
 ### Base URL Configuration
 
@@ -174,24 +229,29 @@ sidebar:
 | `items` | array | Nested items |
 | `collapsed` | boolean | Start collapsed |
 
-## Complete Configuration Example
+## Tam Yapılandırma Örneği
 
-```yaml
+ ```yaml
 # Site metadata
 title: My Documentation
 description: A comprehensive guide to our product
 defaultLocale: en
+base: ""
+logo: false
 locales:
-  - en
-  - tr
-  - de
+  en:
+    indexPage: /intro
+    localePrefix: english
+  tr:
+    indexPage: /intro
+    localePrefix: turkish
+  de:
+    indexPage: /intro
+    localePrefix: german
 
 # Theme settings
 theme:
   default: light
-
-# Branding
-logo: /assets/images/company-logo.webp
 
 # English sidebar
 sidebar:
@@ -228,9 +288,11 @@ sidebar:
       collapsed: false
       items:
         - label: Giriş
-          href: /tr/intro
+          href: /intro
         - label: Kurulum
-          href: /tr/getting-started/installation
+          href: /getting-started/installation
+        - label: Hızlı Başlangıç
+          href: /getting-started/quick-start
 ```
 
 ## Custom Themes

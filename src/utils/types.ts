@@ -1,15 +1,19 @@
+export interface LocaleConfig {
+  indexPage?: string;
+  localePrefix?: string;
+}
+
 export interface DocConfig {
   readonly title: string;
   readonly description: string;
   readonly defaultLocale: string;
-  locales: string[];
+  locales: Record<string, LocaleConfig>;
   readonly base?: string;
   readonly sidebar?: SidebarConfig;
   readonly theme?: {
     readonly default: string;
   };
   readonly logo?: string | false;
-  readonly homePage?: string;
 }
 
 export interface SidebarConfig {

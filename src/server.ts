@@ -32,16 +32,16 @@ async function initServer(): Promise<ServerState> {
     const config = await loadConfig(DOCS_DIR);
     await loadTranslations(getI18nDir());
 
-    const searchIndex = await buildSearchIndex(DOCS_DIR, config.locales);
+    const searchIndex = await buildSearchIndex(DOCS_DIR, Object.keys(config.locales), config);
     const fuse = createFuseInstance(searchIndex);
 
     logger.info("Bunshelf initialized", {
-      locales: config.locales.length,
+      locales: Object.keys(config.locales).length,
       pages: searchIndex.length,
     });
 
     console.log(`🚀 Bunshelf ready`);
-    console.log(`📚 ${config.locales.length} locale(s): ${config.locales.join(", ")}`);
+    console.log(`📚 ${Object.keys(config.locales).length} locale(s): ${Object.keys(config.locales).join(", ")}`);
     console.log(`🔍 ${searchIndex.length} pages indexed`);
 
     return { config, searchIndex, fuse };
@@ -149,8 +149,8 @@ async function handlePage(url: string): Promise<Response> {
 
   if (!docPath && slug === "index") {
     const base = state.config.base || "";
-    const sidebar = state.config.sidebar?.[safeLocale];
-    const redirectTarget = getHomeUrl(safeLocale, base, state.config.homePage, sidebar);
+    const sidebar = await generateSidebar(DOCS_DIR, safeLocale, state.config.sidebar?.[safeLocale], state.config);
+    const redirectTarget = getHomeUrl(safeLocale, base, state.config, sidebar);
     
     return Response.redirect(new URL(redirectTarget, url), 302);
   }
@@ -167,7 +167,7 @@ async function handlePage(url: string): Promise<Response> {
   try {
     const content = await readTextFile(docPath);
     const { meta, html } = parseDocument(content);
-    const sidebar = await generateSidebar(DOCS_DIR, safeLocale, state.config.sidebar?.[safeLocale]);
+    const sidebar = await generateSidebar(DOCS_DIR, safeLocale, state.config.sidebar?.[safeLocale], state.config);
 
     const pageHtml = renderPage({
       locale: safeLocale,
@@ -216,11 +216,11 @@ async function handle404(locale?: string): Promise<Response> {
     return new Response("Not Found", { status: 404 });
   }
   
-  const sidebar = await generateSidebar(DOCS_DIR, effectiveLocale, state.config.sidebar?.[effectiveLocale]);
+  const sidebar = await generateSidebar(DOCS_DIR, effectiveLocale, state.config.sidebar?.[effectiveLocale], state.config);
   const i18n = getTranslations(effectiveLocale);
   const { title, message, home } = getNotFoundTranslations(i18n);
   const base = state.config.base || "";
-  const homeUrl = getHomeUrl(effectiveLocale, base, state.config.homePage, sidebar);
+  const homeUrl = getHomeUrl(effectiveLocale, base, state.config, sidebar);
   
   const pageHtml = renderPage({
     locale: effectiveLocale,

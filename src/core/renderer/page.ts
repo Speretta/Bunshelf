@@ -13,6 +13,7 @@ import { renderLocaleLinks } from "./locale-links.js";
 import { flattenSidebar } from "../../sidebar/generator.js";
 import type { Theme } from "../../utils/types.js";
 import { getTranslations, type TranslationStrings } from "../../i18n/index.js";
+import { getHomeUrl, getLocalePrefix } from "../../utils/navigation.js";
 
 export interface PageRenderOptions {
   locale: string;
@@ -45,13 +46,14 @@ export function renderPage(options: PageRenderOptions): string {
 
   const base = config.base || "";
   const i18n: TranslationStrings = getTranslations(locale);
+  const prefix = getLocalePrefix(locale, config);
   
-  const sidebarHtml = renderSidebar(sidebar, currentSlug, locale, base);
-  const localeLinks = renderLocaleLinks(config.locales, locale, currentSlug, base);
+  const sidebarHtml = renderSidebar(sidebar, currentSlug, locale, base, config);
+  const localeLinks = renderLocaleLinks(config, locale, currentSlug, base);
 
-  const homeUrl = base + `/${locale}`;
+  const homeUrl = getHomeUrl(locale, base, config, sidebar);
 
-  const currentHref = `/${locale}/${currentSlug}`;
+  const currentHref = `/${prefix}/${currentSlug}`;
   const flatPages = flattenSidebar(sidebar);
   
   const normalizeHref = (href: string): string => href.replace(/\/+$/, "");

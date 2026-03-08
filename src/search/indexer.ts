@@ -1,18 +1,21 @@
 import Fuse from "fuse.js";
-import type { SearchResult } from "../utils/types.js";
+import type { SearchResult, DocConfig } from "../utils/types.js";
 import { getMarkdownFiles, getSlugFromPath, readTextFile, exists } from "../utils/fs.js";
 import { join } from "node:path";
 import { parseMarkdown } from "../markdown/parser.js";
 import { extractTitle, stripFrontmatter } from "../utils/frontmatter.js";
+import { getLocalePrefix } from "../utils/navigation.js";
 
 export async function buildSearchIndex(
   docsDir: string,
-  locales: string[]
+  locales: string[],
+  config: DocConfig
 ): Promise<SearchResult[]> {
   const results: SearchResult[] = [];
   
   for (const locale of locales) {
     const localeDir = join(docsDir, locale);
+    const prefix = getLocalePrefix(locale, config);
     
     if (!(await exists(localeDir))) continue;
     
@@ -30,7 +33,7 @@ export async function buildSearchIndex(
       
       results.push({
         title,
-        href: `/${locale}/${slug}`,
+        href: `/${prefix}/${slug}`,
         excerpt,
         content: fullText,
         locale,

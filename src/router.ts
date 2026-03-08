@@ -32,11 +32,24 @@ export function parseRoute(url: string, config: DocConfig): RouteParams | null {
     };
   }
   
-  const isLocale = config.locales.includes(firstSegment);
+  let locale: string | null = null;
+  let localeSegmentIndex = 0;
   
-  if (isLocale) {
-    const locale = firstSegment;
-    const remaining = segments.slice(1);
+  const prefixToLocale: { [prefix: string]: string } = {};
+  for (const [loc, locConfig] of Object.entries(config.locales)) {
+    if (locConfig.localePrefix) {
+      prefixToLocale[locConfig.localePrefix] = loc;
+    }
+  }
+  
+  if (prefixToLocale[firstSegment]) {
+    locale = prefixToLocale[firstSegment];
+  } else if (firstSegment in config.locales) {
+    locale = firstSegment;
+  }
+  
+  if (locale) {
+    const remaining = segments.slice(localeSegmentIndex + 1);
     
     if (remaining.length === 0) {
       return { locale, path: [], slug: "index" };

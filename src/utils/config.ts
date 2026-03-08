@@ -3,18 +3,28 @@ import { join } from "node:path";
 import { exists, readTextFile } from "./fs.js";
 import { logger } from "./logger.js";
 import { createError, ErrorCode } from "./errors.js";
-import type { DocConfig } from "./types.js";
+import type { DocConfig, LocaleConfig } from "./types.js";
 
 const defaultConfig: DocConfig = {
   title: "Bunshelf",
   description: "A fast documentation website generator",
   defaultLocale: "en",
-  locales: ["en"],
+  locales: { en: { indexPage: "/intro", localePrefix: "en" } },
   base: "",
 };
 
 function isValidLocale(locale: unknown): locale is string {
   return typeof locale === "string" && /^[a-z]{2}(-[a-z]{2})?$/.test(locale);
+}
+
+function isValidLocaleConfig(value: unknown): value is LocaleConfig {
+  if (typeof value !== "object" || value === null) return false;
+  const obj = value as Record<string, unknown>;
+  
+  if ("indexPage" in obj && typeof obj.indexPage !== "string") return false;
+  if ("localePrefix" in obj && typeof obj.localePrefix !== "string") return false;
+  
+  return true;
 }
 
 function isDocConfigPartial(value: unknown): value is Partial<DocConfig> {
@@ -26,8 +36,12 @@ function isDocConfigPartial(value: unknown): value is Partial<DocConfig> {
   if ("defaultLocale" in obj && !isValidLocale(obj.defaultLocale)) return false;
   if ("base" in obj && typeof obj.base !== "string") return false;
   if ("locales" in obj) {
-    if (!Array.isArray(obj.locales)) return false;
-    if (!obj.locales.every(isValidLocale)) return false;
+    if (typeof obj.locales !== "object" || obj.locales === null) return false;
+    const locales = obj.locales as Record<string, unknown>;
+    for (const [locale, config] of Object.entries(locales)) {
+      if (!isValidLocale(locale)) return false;
+      if (!isValidLocaleConfig(config)) return false;
+    }
   }
   
   return true;
@@ -48,6 +62,7 @@ function getBaseURL(): string {
 
 export function validateConfig(config: Partial<DocConfig>): DocConfig {
   const errors: string[] = [];
+  const warnings: string[] = [];
 
   if (config.title && (typeof config.title !== "string" || config.title.length > 200)) {
     errors.push("title must be a string with max 200 characters");
@@ -62,14 +77,30 @@ export function validateConfig(config: Partial<DocConfig>): DocConfig {
   }
 
   if (config.locales) {
-    if (!Array.isArray(config.locales)) {
-      errors.push("locales must be an array");
+    if (typeof config.locales !== "object" || config.locales === null) {
+      errors.push("locales must be an object");
     } else {
-      for (const locale of config.locales) {
-        if (typeof locale !== "string" || !/^[a-z]{2}(-[a-z]{2})?$/.test(locale)) {
+      for (const [locale, localeConfig] of Object.entries(config.locales)) {
+        if (!/^[a-z]{2}(-[a-z]{2})?$/.test(locale)) {
           errors.push(`invalid locale format: ${locale}`);
         }
+        
+        if (!localeConfig.localePrefix) {
+          warnings.push(`locale "${locale}" has no localePrefix defined, using "${locale}" as default`);
+          localeConfig.localePrefix = locale;
+        }
+        
+        if (!localeConfig.indexPage) {
+          warnings.push(`locale "${locale}" has no indexPage defined, using "/intro" as default`);
+          localeConfig.indexPage = "/intro";
+        }
       }
+    }
+  }
+
+  if (warnings.length > 0) {
+    for (const warning of warnings) {
+      logger.warn(warning);
     }
   }
 
@@ -108,7 +139,7 @@ export async function loadConfig(docsDir: string): Promise<DocConfig> {
     const config = validateConfig(parsed);
     
     logger.info("Config loaded", { 
-      locales: config.locales,
+      locales: Object.keys(config.locales),
       defaultLocale: config.defaultLocale 
     });
     

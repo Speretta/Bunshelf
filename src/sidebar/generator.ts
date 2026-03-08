@@ -1,13 +1,15 @@
-import type { SidebarItem, PageMeta } from "../utils/types.js";
+import type { SidebarItem, PageMeta, DocConfig } from "../utils/types.js";
 import { getMarkdownFiles, getSlugFromPath, readTextFile, exists } from "../utils/fs.js";
 import { parseFrontmatter } from "../utils/frontmatter.js";
 import { DEFAULT_ORDER } from "../core/constants/defaults.js";
 import { join, basename } from "node:path";
+import { getLocalePrefix } from "../utils/navigation.js";
 
 export async function generateSidebar(
   docsDir: string,
   locale: string,
-  configSidebar?: SidebarItem[]
+  configSidebar?: SidebarItem[],
+  config?: DocConfig
 ): Promise<SidebarItem[]> {
   const localeDir = join(docsDir, locale);
   
@@ -15,14 +17,16 @@ export async function generateSidebar(
     return [];
   }
   
+  const isDefaultLocale = config?.defaultLocale === locale;
+  const prefix = config ? getLocalePrefix(locale, config) : locale;
   const files = await getMarkdownFiles(localeDir);
-  const autoStructure = await buildStructure(files, localeDir, locale);
+  const autoStructure = await buildStructure(files, localeDir, locale, prefix, isDefaultLocale);
   
   if (!configSidebar || configSidebar.length === 0) {
     return autoStructure;
   }
   
-  const configItems = addLocalePrefix(configSidebar, locale);
+  const configItems = addLocalePrefix(configSidebar, locale, prefix, isDefaultLocale);
   const definedHrefs = new Set<string>();
   collectHrefs(configItems, definedHrefs);
   
@@ -121,18 +125,24 @@ function mergeSidebars(configItems: SidebarItem[], autoItems: SidebarItem[]): Si
   return result;
 }
 
-function addLocalePrefix(items: SidebarItem[], locale: string): SidebarItem[] {
+function addLocalePrefix(items: SidebarItem[], locale: string, prefix: string, isDefaultLocale: boolean): SidebarItem[] {
   return items.map(item => ({
     ...item,
-    href: item.href ? addLocaleToHref(item.href, locale) : undefined,
-    items: item.items ? addLocalePrefix(item.items, locale) : undefined,
+    href: item.href ? addLocaleToHref(item.href, locale, prefix, isDefaultLocale) : undefined,
+    items: item.items ? addLocalePrefix(item.items, locale, prefix, isDefaultLocale) : undefined,
   }));
 }
 
-function addLocaleToHref(href: string, locale: string): string {
-  if (href.startsWith(`/${locale}/`)) return href;
-  if (href.startsWith("/")) return `/${locale}${href}`;
-  return `/${locale}/${href}`;
+function addLocaleToHref(href: string, locale: string, prefix: string, isDefaultLocale: boolean): string {
+  if (isDefaultLocale) {
+    if (href.startsWith("/")) return href;
+    return `/${href}`;
+  }
+  
+  if (href.startsWith(`/${prefix}/`)) return href;
+  if (href.startsWith(`/${locale}/`)) return href.replace(`/${locale}/`, `/${prefix}/`);
+  if (href.startsWith("/")) return `/${prefix}${href}`;
+  return `/${prefix}/${href}`;
 }
 
 interface FileEntry {
@@ -142,7 +152,7 @@ interface FileEntry {
   isIndex: boolean;
 }
 
-async function buildStructure(files: string[], baseDir: string, locale: string): Promise<SidebarItem[]> {
+async function buildStructure(files: string[], baseDir: string, _locale: string, prefix: string, isDefaultLocale: boolean): Promise<SidebarItem[]> {
   const entries: FileEntry[] = [];
   
   for (const file of files) {
@@ -176,7 +186,7 @@ async function buildStructure(files: string[], baseDir: string, locale: string):
     const baseHref = entry.isIndex
       ? `/${parts.slice(0, -1).join("/")}` || "/"
       : `/${entry.slug}`;
-    const href = `/${locale}${baseHref}`;
+    const href = isDefaultLocale ? baseHref : `/${prefix}${baseHref}`;
     
     if (parts.length === 1 && !entry.isIndex) {
       root.push({ label, href });
@@ -185,7 +195,7 @@ async function buildStructure(files: string[], baseDir: string, locale: string):
       if (dirPath) {
         const dirItem: SidebarItem = {
           label,
-          href: `/${locale}/${dirPath}`,
+          href: `/${prefix}/${dirPath}`,
           items: [],
         };
         dirs.set(dirPath, dirItem);

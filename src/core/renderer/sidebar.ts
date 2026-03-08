@@ -1,8 +1,14 @@
-import type { SidebarItem } from "../../utils/types.js";
+import type { SidebarItem, DocConfig } from "../../utils/types.js";
+import { getLocalePrefix } from "../../utils/navigation.js";
 
-export function renderSidebar(items: SidebarItem[], currentSlug: string, locale: string = "en", base: string = ""): string {
+export function renderSidebar(items: SidebarItem[], currentSlug: string, locale: string = "en", base: string = "", config?: DocConfig): string {
   const normalizeHref = (href: string): string => href.replace(/\/+$/, "");
-  const currentHref = normalizeHref(`/${locale}/${currentSlug}`);
+  const prefix = config ? getLocalePrefix(locale, config) : locale;
+  const isDefaultLocale = config?.defaultLocale === locale;
+  
+  const currentHref = isDefaultLocale 
+    ? normalizeHref(`/${currentSlug}`)
+    : normalizeHref(`/${prefix}/${currentSlug}`);
   const currentHrefNoLocale = normalizeHref(`/${currentSlug}`);
   
   return items

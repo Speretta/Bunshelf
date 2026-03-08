@@ -13,8 +13,8 @@ import { isValidPath } from "../utils/sanitize.js";
 import { write as runtimeWrite } from "../utils/runtime.js";
 import { renderHead } from "../templates/head.js";
 import { getDocsDir, getOutputDir, getPublicDir, getI18nDir } from "../utils/paths.js";
-import { getHomeUrl, getIndexRedirectUrl, getThemeInitScript } from "../utils/navigation.js";
-import type { SidebarItem } from "../utils/types.js";
+import { getHomeUrl, getIndexRedirectUrl, getThemeInitScript, getLocalePrefix } from "../utils/navigation.js";
+import type { SidebarItem, DocConfig } from "../utils/types.js";
 
 const DOCS_DIR = getDocsDir();
 const OUTPUT_DIR = getOutputDir();
@@ -26,6 +26,43 @@ interface BuildContext {
   searchIndex: Awaited<ReturnType<typeof buildSearchIndex>>;
 }
 
+function flattenSidebarItems(items: SidebarItem[]): string[] {
+  const hrefs: string[] = [];
+  for (const item of items) {
+    if (item.href) {
+      hrefs.push(item.href);
+    }
+    if (item.items) {
+      hrefs.push(...flattenSidebarItems(item.items));
+    }
+  }
+  return hrefs;
+}
+
+async function validateIndexPages(config: DocConfig): Promise<void> {
+  const errors: string[] = [];
+
+  for (const [locale, localeConfig] of Object.entries(config.locales)) {
+    const indexPage = localeConfig.indexPage;
+    if (!indexPage) continue;
+    
+    const sidebar = config.sidebar?.[locale] || [];
+    const allHrefs = flattenSidebarItems(sidebar);
+
+    const prefix = localeConfig.localePrefix || locale;
+    const expectedHref = `/${prefix}${indexPage}`;
+    if (!allHrefs.includes(expectedHref) && !allHrefs.includes(indexPage)) {
+      errors.push(`locales.${locale}.indexPage: Page "${indexPage}" not found in sidebar for locale "${locale}". Make sure the href matches a sidebar item.`);
+    }
+  }
+
+  if (errors.length > 0) {
+    console.error("❌ indexPages validation failed:");
+    errors.forEach(err => console.error(`  - ${err}`));
+    throw new Error("indexPages validation failed. See errors above.");
+  }
+}
+
 async function build(): Promise<void> {
   console.log("🔨 Building static site...");
   logger.info("Build started");
@@ -34,7 +71,7 @@ async function build(): Promise<void> {
     const config = await loadConfig(DOCS_DIR);
     await loadTranslations(getI18nDir());
 
-    const searchIndex = await buildSearchIndex(DOCS_DIR, config.locales);
+    const searchIndex = await buildSearchIndex(DOCS_DIR, Object.keys(config.locales), config);
     
     const base = config.base || "";
     if (base) {
@@ -51,10 +88,11 @@ async function build(): Promise<void> {
     await cp(join(PUBLIC_DIR, "assets", "js"), join(OUTPUT_DIR, "assets", "js"), { recursive: true });
 
     if (!config.logo) {
-      ctx.config = { ...config, logo: DEFAULT_LOGO_URL };
+      const logoDownloaded = await downloadDefaultLogo(OUTPUT_DIR);
+      ctx.config = { ...config, logo: logoDownloaded ? "/assets/images/logo.webp" : false };
     }
 
-    for (const locale of config.locales) {
+    for (const locale of Object.keys(config.locales)) {
       console.log(`📝 Building locale: ${locale}`);
       logger.debug("Building locale", { locale });
       await buildLocalePages(ctx, locale);
@@ -65,24 +103,61 @@ async function build(): Promise<void> {
 
     await write404Pages(ctx);
     
-    const defaultLocaleSidebar = await generateSidebar(DOCS_DIR, ctx.config.defaultLocale, ctx.config.sidebar?.[ctx.config.defaultLocale]);
+    const defaultLocaleSidebar = await generateSidebar(DOCS_DIR, ctx.config.defaultLocale, ctx.config.sidebar?.[ctx.config.defaultLocale], ctx.config);
+    
+    validateIndexPages(ctx.config);
+    
     await writeIndexRedirect(
       ctx.config.defaultLocale, 
       ctx.config.base, 
-      ctx.config.homePage, 
+      ctx.config,
       defaultLocaleSidebar
     );
 
     console.log("✅ Build complete!");
     console.log(`📁 Output: ${OUTPUT_DIR}`);
     logger.info("Build completed", { 
-      locales: config.locales.length,
+      locales: Object.keys(config.locales).length,
       pages: searchIndex.length 
     });
   } catch (error) {
     console.error("❌ Build failed!");
     logger.error("Build failed", { error });
     process.exit(1);
+  }
+}
+
+async function downloadDefaultLogo(distDir: string): Promise<boolean> {
+  const logoDir = join(distDir, "assets", "images");
+  const logoPath = join(logoDir, "logo.webp");
+  
+  if (await exists(logoPath)) {
+    console.log("  ✓ Using cached default logo");
+    logger.debug("Logo already exists, skipping download", { path: logoPath });
+    return true;
+  }
+  
+  await mkdir(logoDir, { recursive: true });
+  
+  console.log("  📥 Downloading default logo from GitHub...");
+  logger.info("Downloading default logo");
+  
+  try {
+    const response = await fetch(DEFAULT_LOGO_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to download logo: ${response.statusText}`);
+    }
+    
+    const buffer = await response.arrayBuffer();
+    await runtimeWrite(logoPath, Buffer.from(buffer));
+    
+    console.log("  ✓ Default logo downloaded");
+    logger.debug("Default logo saved", { path: logoPath });
+    return true;
+  } catch (error) {
+    console.error("  ⚠️  Failed to download default logo. Please provide your own logo or check internet connection.");
+    logger.warn("Failed to download default logo", { error });
+    return false;
   }
 }
 
@@ -95,7 +170,7 @@ async function buildLocalePages(ctx: BuildContext, locale: string): Promise<void
   }
 
   const files = await getMarkdownFiles(localeDir);
-  const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale]);
+  const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale], ctx.config);
 
   for (const file of files) {
     await buildPage(ctx, locale, file, sidebar);
@@ -118,15 +193,16 @@ async function buildPage(
     const { meta, html } = parseDocument(content);
 
     const slug = getSlugFromPath(join(DOCS_DIR, locale), filePath);
+    const prefix = getLocalePrefix(locale, ctx.config);
     
     let outputPath: string;
     if (slug === "index") {
-      outputPath = join(OUTPUT_DIR, locale, "index.html");
+      outputPath = join(OUTPUT_DIR, prefix, "index.html");
     } else if (slug.endsWith("/index")) {
       const dirSlug = slug.replace(/\/index$/, "");
-      outputPath = join(OUTPUT_DIR, locale, dirSlug, "index.html");
+      outputPath = join(OUTPUT_DIR, prefix, dirSlug, "index.html");
     } else {
-      outputPath = join(OUTPUT_DIR, locale, slug, "index.html");
+      outputPath = join(OUTPUT_DIR, prefix, slug, "index.html");
     }
 
     if (!isValidPath(OUTPUT_DIR, outputPath)) {
@@ -159,11 +235,12 @@ async function buildPage(
 async function write404Pages(ctx: BuildContext): Promise<void> {
   const base = ctx.config.base || "";
   
-  for (const locale of ctx.config.locales) {
-    const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale]);
+  for (const locale of Object.keys(ctx.config.locales)) {
+    const sidebar = await generateSidebar(DOCS_DIR, locale, ctx.config.sidebar?.[locale], ctx.config);
     const i18n = getTranslations(locale);
     const { title, message, home } = getNotFoundTranslations(i18n);
-    const homeUrl = getHomeUrl(locale, base, ctx.config.homePage, sidebar);
+    const homeUrl = getHomeUrl(locale, base, ctx.config, sidebar);
+    const prefix = getLocalePrefix(locale, ctx.config);
     
     const html = `<!DOCTYPE html>
 <html lang="${locale}">
@@ -178,14 +255,14 @@ ${renderHead({ title: `404 - ${title}`, siteTitle: ctx.config.title, description
 </body>
 </html>`;
 
-    const locale404Path = join(OUTPUT_DIR, locale, "404.html");
+    const locale404Path = join(OUTPUT_DIR, prefix, "404.html");
     await mkdir(dirname(locale404Path), { recursive: true });
     await runtimeWrite(locale404Path, html);
   }
 }
 
-async function writeIndexRedirect(defaultLocale: string, base: string = "", homePage?: string, sidebar?: SidebarItem[]): Promise<void> {
-  const redirectUrl = getIndexRedirectUrl(defaultLocale, base, homePage, sidebar);
+async function writeIndexRedirect(defaultLocale: string, base: string = "", config: DocConfig, sidebar?: SidebarItem[]): Promise<void> {
+  const redirectUrl = getIndexRedirectUrl(defaultLocale, base, config, sidebar);
   
   const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${redirectUrl}"></head><body><a href="${redirectUrl}">Redirecting...</a></body></html>`;
   await runtimeWrite(join(OUTPUT_DIR, "index.html"), html);

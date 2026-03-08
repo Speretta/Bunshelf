@@ -36,24 +36,24 @@ describe("sanitizeSlug", () => {
 
 describe("sanitizeLocale", () => {
   test("returns null for invalid locale format", () => {
-    expect(sanitizeLocale("english", ["en"])).toBeNull();
-    expect(sanitizeLocale("e", ["en"])).toBeNull();
-    expect(sanitizeLocale("engl", ["en"])).toBeNull();
+    expect(sanitizeLocale("english", { en: {} })).toBeNull();
+    expect(sanitizeLocale("e", { en: {} })).toBeNull();
+    expect(sanitizeLocale("engl", { en: {} })).toBeNull();
   });
 
   test("returns null for locale not in allowed list", () => {
-    expect(sanitizeLocale("de", ["en", "tr"])).toBeNull();
+    expect(sanitizeLocale("de", { en: {}, tr: {} })).toBeNull();
   });
 
   test("returns sanitized locale for valid input", () => {
-    expect(sanitizeLocale("en", ["en", "tr"])).toBe("en");
-    expect(sanitizeLocale("TR", ["en", "tr"])).toBe("tr");
-    expect(sanitizeLocale("  en  ", ["en", "tr"])).toBe("en");
+    expect(sanitizeLocale("en", { en: {}, tr: {} })).toBe("en");
+    expect(sanitizeLocale("TR", { en: {}, tr: {} })).toBe("tr");
+    expect(sanitizeLocale("  en  ", { en: {}, tr: {} })).toBe("en");
   });
 
   test("supports locale with region code", () => {
-    expect(sanitizeLocale("en-us", ["en-us", "en-gb"])).toBe("en-us");
-    expect(sanitizeLocale("EN-GB", ["en-us", "en-gb"])).toBe("en-gb");
+    expect(sanitizeLocale("en-us", { "en-us": {}, "en-gb": {} })).toBe("en-us");
+    expect(sanitizeLocale("EN-GB", { "en-us": {}, "en-gb": {} })).toBe("en-gb");
   });
 });
 
