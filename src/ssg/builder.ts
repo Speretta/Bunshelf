@@ -49,6 +49,7 @@ async function build(): Promise<void> {
 
     await cp(join(PUBLIC_DIR, "assets", "css"), join(OUTPUT_DIR, "assets", "css"), { recursive: true });
     await cp(join(PUBLIC_DIR, "assets", "js"), join(OUTPUT_DIR, "assets", "js"), { recursive: true });
+    await cp(join(PUBLIC_DIR, "assets", "images"), join(OUTPUT_DIR, "assets", "images"), { recursive: true });
 
     if (!config.logo) {
       const logoDownloaded = await downloadDefaultLogo(OUTPUT_DIR);
