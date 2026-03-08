@@ -51,8 +51,7 @@ async function build(): Promise<void> {
     await cp(join(PUBLIC_DIR, "assets", "js"), join(OUTPUT_DIR, "assets", "js"), { recursive: true });
 
     if (!config.logo) {
-      const logoDownloaded = await downloadDefaultLogo(OUTPUT_DIR);
-      ctx.config = { ...config, logo: logoDownloaded ? "/assets/images/logo.webp" : false };
+      ctx.config = { ...config, logo: DEFAULT_LOGO_URL };
     }
 
     for (const locale of config.locales) {
@@ -84,40 +83,6 @@ async function build(): Promise<void> {
     console.error("❌ Build failed!");
     logger.error("Build failed", { error });
     process.exit(1);
-  }
-}
-
-async function downloadDefaultLogo(distDir: string): Promise<boolean> {
-  const logoDir = join(distDir, "assets", "images");
-  const logoPath = join(logoDir, "logo.webp");
-  
-  if (await exists(logoPath)) {
-    console.log("  ✓ Using cached default logo");
-    logger.debug("Logo already exists, skipping download", { path: logoPath });
-    return true;
-  }
-  
-  await mkdir(logoDir, { recursive: true });
-  
-  console.log("  📥 Downloading default logo from GitHub...");
-  logger.info("Downloading default logo");
-  
-  try {
-    const response = await fetch(DEFAULT_LOGO_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to download logo: ${response.statusText}`);
-    }
-    
-    const buffer = await response.arrayBuffer();
-    await runtimeWrite(logoPath, Buffer.from(buffer));
-    
-    console.log("  ✓ Default logo downloaded");
-    logger.debug("Default logo saved", { path: logoPath });
-    return true;
-  } catch (error) {
-    console.error("  ⚠️  Failed to download default logo. Please provide your own logo or check internet connection.");
-    logger.warn("Failed to download default logo", { error });
-    return false;
   }
 }
 
