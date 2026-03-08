@@ -192,16 +192,15 @@ cp docs/tr/intro.md docs/de/intro.md
 Statik site oluşturun:
 
 ```bash
-bun run build
+bunx bunshelf build
 ```
 
-Çıktı `dist/` dizininde olacaktır:
+Çıktı `out/` dizininde olacaktır:
 
 ```
-dist/
+out/
 ├── index.html
-├── tr/
-│   ├── index.html
+├── en/
 │   ├── intro/
 │   │   └── index.html
 │   └── getting-started/
@@ -209,6 +208,8 @@ dist/
 │       │   └── index.html
 │       └── quick-start/
 │           └── index.html
+├── tr/
+│   └── ...
 ├── assets/
 │   ├── css/
 │   ├── js/
@@ -221,7 +222,7 @@ dist/
 Üretim build'inizi yerel olarak test edin:
 
 ```bash
-bun run preview
+bunx bunshelf preview
 ```
 
 ::: info Statik Site
@@ -233,20 +234,20 @@ Build süreci tamamen statik HTML dosyaları oluşturur. Sunucu tarafı render g
 ### Vercel
 
 ```bash
-vercel deploy dist
+vercel deploy out
 ```
 
 ### Netlify
 
-`dist/` klasörünü Netlify'a sürükleyip bırakın veya CLI kullanın:
+`out/` klasörünü Netlify'a sürükleyip bırakın veya CLI kullanın:
 
 ```bash
-netlify deploy --prod --dir=dist
+netlify deploy --prod --dir=out
 ```
 
 ### GitHub Pages
 
-`dist/` klasörünü `gh-pages` dalınıza push edin.
+`out/` klasörünü `gh-pages` dalınıza push edin.
 
 ## Sırada Ne Var?
 

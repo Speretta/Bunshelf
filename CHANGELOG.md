@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - README.md images now use GitHub raw URLs for better visibility on npm
+- Documentation updated to use `bunx bunshelf` commands instead of `bun run`
+- Documentation updated with all CLI commands (dev, build, preview, clean, --help, --version)
+- Project structure documentation simplified for end users
+- Build output directory documentation updated (`out/` instead of `dist/`)
 
 ## [1.5.0] - 2026-03-08
 

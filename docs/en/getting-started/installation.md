@@ -28,31 +28,31 @@ Bun is a modern JavaScript runtime that's significantly faster than Node.js. It 
 
 ## Installation Methods
 
-### Option 1: Clone the Repository
+### Option 1: Install as NPM Package (Recommended)
 
-The fastest way to get started:
+The easiest way to get started:
+
+```bash
+# Using npm
+npm install -D bunshelf
+
+# Using bun
+bun add -d bunshelf
+
+# Using yarn
+yarn add -D bunshelf
+```
+
+Then run with `bunx bunshelf` or add scripts to your `package.json`.
+
+### Option 2: Clone the Repository
+
+For development or customization:
 
 ```bash
 git clone https://github.com/speretta/bunshelf.git
 cd bunshelf
 bun install
-```
-
-### Option 2: Manual Setup
-
-Create a new project from scratch:
-
-```bash
-mkdir my-docs
-cd my-docs
-bun init
-```
-
-Install dependencies:
-
-```bash
-bun add markdown-it yaml front-matter fuse.js highlight.js
-bun add -d @types/bun @types/markdown-it @types/highlight.js
 ```
 
 ::: tip Pro Tip
@@ -64,32 +64,17 @@ Use `bun install` instead of `npm install` for significantly faster package inst
 After installation, your project should look like this:
 
 ```
-bunshelf/
-├── src/
-│   ├── core/
-│   │   ├── constants/      # Default values, CDN URLs
-│   │   └── renderer/       # Page rendering logic
-│   ├── templates/          # HTML components
-│   │   └── components/     # Navbar, sidebar, etc.
-│   ├── markdown/           # Markdown parsing
-│   │   ├── parser.ts
-│   │   ├── callouts.ts
-│   │   └── colored-text.ts
-│   ├── themes/             # Theme system
-│   ├── i18n/               # Translations
-│   ├── utils/              # Utilities
-│   ├── server.ts           # Dev server
-│   └── ssg/                # Static site generator
-├── public/
-│   └── assets/
-│       ├── css/            # Stylesheets
-│       ├── js/             # Client-side JS
-│       └── images/         # Logo, icons
+my-docs/
 ├── docs/
 │   ├── config.yaml         # Site configuration
 │   ├── en/                 # English content
+│   │   ├── intro.md
+│   │   └── getting-started/
 │   └── tr/                 # Turkish content
-└── dist/                   # Build output
+│       ├── intro.md
+│       └── getting-started/
+├── out/                    # Build output (static site)
+└── package.json
 ```
 
 ## Configuration
@@ -122,7 +107,7 @@ theme:
 Start the development server with hot reload:
 
 ```bash
-bun run dev
+bunx bunshelf dev
 ```
 
 Your documentation site will be available at `http://localhost:3000`.
@@ -131,9 +116,29 @@ Your documentation site will be available at `http://localhost:3000`.
 
 | Command | Description |
 |---------|-------------|
-| `bun run dev` | Start development server with hot reload |
-| `bun run build` | Build static site for production |
-| `bun run preview` | Preview production build locally |
+| `bunx bunshelf dev` | Start development server with hot reload |
+| `bunx bunshelf build` | Build static site for production |
+| `bunx bunshelf preview` | Preview production build locally |
+| `bunx bunshelf clean` | Remove build output directory |
+| `bunx bunshelf --help` | Show help message |
+| `bunx bunshelf --version` | Show version number |
+
+### NPM Scripts (Optional)
+
+You can also add these scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "docs:dev": "bunshelf dev",
+    "docs:build": "bunshelf build",
+    "docs:preview": "bunshelf preview",
+    "docs:clean": "bunshelf clean"
+  }
+}
+```
+
+Then run with `npm run docs:dev` or `bun run docs:dev`.
 
 ::: warning Port in Use
 If port 3000 is already in use, you can specify a different port:

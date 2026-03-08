@@ -192,21 +192,24 @@ cp docs/en/intro.md docs/de/intro.md
 Generate a static site:
 
 ```bash
-bun run build
+bunx bunshelf build
 ```
 
-The output will be in the `dist/` directory:
+The output will be in the `out/` directory:
 
 ```
-dist/
+out/
 ├── index.html
-├── intro/
-│   └── index.html
-├── getting-started/
-│   ├── installation/
+├── en/
+│   ├── intro/
 │   │   └── index.html
-│   └── quick-start/
-│       └── index.html
+│   └── getting-started/
+│       ├── installation/
+│       │   └── index.html
+│       └── quick-start/
+│           └── index.html
+├── tr/
+│   └── ...
 ├── assets/
 │   ├── css/
 │   ├── js/
@@ -219,7 +222,7 @@ dist/
 Test your production build locally:
 
 ```bash
-bun run preview
+bunx bunshelf preview
 ```
 
 ::: info Static Site
@@ -231,20 +234,20 @@ The build process generates fully static HTML files. No server-side rendering re
 ### Vercel
 
 ```bash
-vercel deploy dist
+vercel deploy out
 ```
 
 ### Netlify
 
-Drag and drop the `dist/` folder to Netlify, or use the CLI:
+Drag and drop the `out/` folder to Netlify, or use the CLI:
 
 ```bash
-netlify deploy --prod --dir=dist
+netlify deploy --prod --dir=out
 ```
 
 ### GitHub Pages
 
-Push the `dist/` folder to your `gh-pages` branch.
+Push the `out/` folder to your `gh-pages` branch.
 
 ## What's Next?
 

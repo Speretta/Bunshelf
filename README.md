@@ -74,7 +74,8 @@ Add these scripts to your `package.json`:
   "scripts": {
     "docs:dev": "bunshelf dev",
     "docs:build": "bunshelf build",
-    "docs:preview": "bunshelf preview"
+    "docs:preview": "bunshelf preview",
+    "docs:clean": "bunshelf clean"
   }
 }
 ```
@@ -82,7 +83,7 @@ Add these scripts to your `package.json`:
 ### Run Development Server
 
 ```bash
-npm run docs:dev
+bunx bunshelf dev
 ```
 
 Visit `http://localhost:3000` to see your documentation.
@@ -90,10 +91,10 @@ Visit `http://localhost:3000` to see your documentation.
 ### Build for Production
 
 ```bash
-npm run docs:build
+bunx bunshelf build
 ```
 
-Output will be in the `dist/` folder.
+Output will be in the `out/` folder.
 
 ## Configuration
 
@@ -172,11 +173,12 @@ npm install bunshelf
 ## CLI Commands
 
 ```bash
-bunshelf dev       # Start development server
-bunshelf build     # Build static site
-bunshelf preview   # Preview production build
-bunshelf --help    # Show help
-bunshelf --version # Show version
+bunx bunshelf dev       # Start development server
+bunx bunshelf build     # Build static site
+bunx bunshelf preview   # Preview production build
+bunx bunshelf clean     # Remove build output directory
+bunx bunshelf --help    # Show help
+bunx bunshelf --version # Show version
 ```
 
 ## Programmatic API

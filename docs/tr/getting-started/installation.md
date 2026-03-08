@@ -28,9 +28,26 @@ Bun, Node.js'ten önemli ölçüde daha hızlı modern bir JavaScript çalışma
 
 ## Kurulum Yöntemleri
 
-### Yöntem 1: Depoyu Klonlama
+### Yöntem 1: NPM Paketi Olarak Kurulum (Önerilen)
 
-Başlamanın en hızlı yolu:
+Başlamanın en kolay yolu:
+
+```bash
+# npm ile
+npm install -D bunshelf
+
+# bun ile
+bun add -d bunshelf
+
+# yarn ile
+yarn add -D bunshelf
+```
+
+Ardından `bunx bunshelf` ile çalıştırın veya `package.json` dosyanıza script ekleyin.
+
+### Yöntem 2: Depoyu Klonlama
+
+Geliştirme veya özelleştirme için:
 
 ```bash
 git clone https://github.com/speretta/bunshelf.git
@@ -38,58 +55,22 @@ cd bunshelf
 bun install
 ```
 
-### Yöntem 2: Manuel Kurulum
-
-Sıfırdan yeni bir proje oluşturun:
-
-```bash
-mkdir my-docs
-cd my-docs
-bun init
-```
-
-Bağımlılıkları yükleyin:
-
-```bash
-bun add markdown-it yaml front-matter fuse.js highlight.js
-bun add -d @types/bun @types/markdown-it @types/highlight.js
-```
-
-::: tip İpucu
-Paket kurulumu için `npm install` yerine `bun install` kullanın - çok daha hızlıdır! Bun, paketleri 20 kata kadar daha hızlı kurabilir!
-:::
-
 ## Proje Yapısı
 
 Kurulumdan sonra projeniz şu şekilde görünmelidir:
 
 ```
-bunshelf/
-├── src/
-│   ├── core/
-│   │   ├── constants/      # Varsayılan değerler, CDN URL'leri
-│   │   └── renderer/       # Sayfa render mantığı
-│   ├── templates/          # HTML bileşenleri
-│   │   └── components/     # Navbar, sidebar vb.
-│   ├── markdown/           # Markdown ayrıştırma
-│   │   ├── parser.ts
-│   │   ├── callouts.ts
-│   │   └── colored-text.ts
-│   ├── themes/             # Tema sistemi
-│   ├── i18n/               # Çeviriler
-│   ├── utils/              # Yardımcı araçlar
-│   ├── server.ts           # Geliştirme sunucusu
-│   └── ssg/                # Statik site oluşturucu
-├── public/
-│   └── assets/
-│       ├── css/            # Stil dosyaları
-│       ├── js/             # İstemci tarafı JS
-│       └── images/         # Logo, ikonlar
+my-docs/
 ├── docs/
 │   ├── config.yaml         # Site yapılandırması
 │   ├── en/                 # İngilizce içerik
+│   │   ├── intro.md
+│   │   └── getting-started/
 │   └── tr/                 # Türkçe içerik
-└── dist/                   # Build çıktısı
+│       ├── intro.md
+│       └── getting-started/
+├── out/                    # Build çıktısı (statik site)
+└── package.json
 ```
 
 ## Yapılandırma
@@ -122,7 +103,7 @@ theme:
 Hot reload ile geliştirme sunucusunu başlatın:
 
 ```bash
-bun run dev
+bunx bunshelf dev
 ```
 
 Dokümantasyon siteniz `http://localhost:3000` adresinde kullanılabilir olacaktır.
@@ -131,9 +112,29 @@ Dokümantasyon siteniz `http://localhost:3000` adresinde kullanılabilir olacakt
 
 | Komut | Açıklama |
 |-------|----------|
-| `bun run dev` | Hot reload ile geliştirme sunucusunu başlat |
-| `bun run build` | Üretim için statik site oluştur |
-| `bun run preview` | Üretim build'ini yerel olarak önizle |
+| `bunx bunshelf dev` | Hot reload ile geliştirme sunucusunu başlat |
+| `bunx bunshelf build` | Üretim için statik site oluştur |
+| `bunx bunshelf preview` | Üretim build'ini yerel olarak önizle |
+| `bunx bunshelf clean` | Build çıktı dizinini sil |
+| `bunx bunshelf --help` | Yardım mesajını göster |
+| `bunx bunshelf --version` | Sürüm numarasını göster |
+
+### NPM Script'leri (İsteğe Bağlı)
+
+`package.json` dosyanıza şu script'leri ekleyebilirsiniz:
+
+```json
+{
+  "scripts": {
+    "docs:dev": "bunshelf dev",
+    "docs:build": "bunshelf build",
+    "docs:preview": "bunshelf preview",
+    "docs:clean": "bunshelf clean"
+  }
+}
+```
+
+Ardından `npm run docs:dev` veya `bun run docs:dev` ile çalıştırın.
 
 ::: warning Port Kullanımda
 Eğer 3000 portu zaten kullanılıyorsa, farklı bir port belirtebilirsiniz:
@@ -148,6 +149,10 @@ PORT=3001 bun run dev
 1. Tarayıcınızı açın ve `http://localhost:3000` adresine gidin
 2. Bunshelf logosu ile karşılama sayfasını görmelisiniz
 3. `docs/tr/intro.md` dosyasını düzenlemeyi deneyin - değişiklikler anında görünmelidir
+
+::: tip İpucu
+Paket kurulumu için `npm install` yerine `bun install` kullanın - çok daha hızlıdır! Bun, paketleri 20 kata kadar daha hızlı kurabilir!
+:::
 
 ## Sorun Giderme
 
