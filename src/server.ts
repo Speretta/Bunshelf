@@ -12,7 +12,7 @@ import { sanitizeSlug, sanitizeLocale, isValidPath } from "./utils/sanitize.js";
 import { logger } from "./utils/logger.js";
 import { handleError } from "./utils/errors.js";
 import { serve, file as runtimeFile, type ServerOptions } from "./utils/runtime.js";
-import { getMimeType } from "./utils/mime.js";
+import { getMimeType, getCacheHeaders } from "./utils/mime.js";
 import { getPublicDir, getI18nDir } from "./utils/paths.js";
 import { getHomeUrl } from "./utils/navigation.js";
 
@@ -78,8 +78,9 @@ async function handleAsset(url: string): Promise<Response> {
     const fileContent = runtimeFile(filePath);
     const buffer = await fileContent.arrayBuffer();
     const contentType = getMimeType(filePath);
+    const cacheHeaders = getCacheHeaders(filePath);
     return new Response(buffer, {
-      headers: { "Content-Type": contentType },
+      headers: { "Content-Type": contentType, ...cacheHeaders },
     });
   }
 

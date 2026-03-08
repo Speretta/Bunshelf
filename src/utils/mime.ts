@@ -17,9 +17,24 @@ const MIME_TYPES: Record<string, string> = {
   ".xml": "application/xml",
 };
 
+const CACHEABLE_EXTENSIONS = new Set([
+  ".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
+  ".woff", ".woff2", ".ttf", ".eot", ".ico",
+]);
+
 export function getMimeType(path: string): string {
   const ext = path.substring(path.lastIndexOf(".")).toLowerCase();
   return MIME_TYPES[ext] || "application/octet-stream";
+}
+
+export function getCacheHeaders(path: string): Record<string, string> {
+  const ext = path.substring(path.lastIndexOf(".")).toLowerCase();
+  
+  if (CACHEABLE_EXTENSIONS.has(ext)) {
+    return { "Cache-Control": "public, max-age=31536000, immutable" };
+  }
+  
+  return { "Cache-Control": "no-cache" };
 }
 
 export { MIME_TYPES };

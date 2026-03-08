@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { exists } from "../utils/fs.js";
 import { serve, file as runtimeFile, type ServerOptions } from "../utils/runtime.js";
-import { getMimeType } from "../utils/mime.js";
+import { getMimeType, getCacheHeaders } from "../utils/mime.js";
 import { getOutputDir } from "../utils/paths.js";
 
 const OUTPUT_DIR = getOutputDir();
@@ -38,8 +38,9 @@ async function main(): Promise<void> {
         const fileContent = runtimeFile(filePath);
         const buffer = await fileContent.arrayBuffer();
         const contentType = getMimeType(filePath);
+        const cacheHeaders = getCacheHeaders(filePath);
         return new Response(buffer, {
-          headers: { "Content-Type": contentType },
+          headers: { "Content-Type": contentType, ...cacheHeaders },
         });
       }
       
